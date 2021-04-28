@@ -1,6 +1,7 @@
 package com.janek.photoShareApp.controllers;
 
 import com.janek.photoShareApp.models.User;
+import com.janek.photoShareApp.payload.response.MessageResponse;
 import com.janek.photoShareApp.repository.UserRepository;
 import com.janek.photoShareApp.security.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ import java.util.List;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/test")
-public class TestController {
+public class UserController {
 	@Autowired
 	UserRepository userRepository;
 
@@ -46,12 +47,47 @@ public class TestController {
 //		return "Admin Board.";
 	}
 
-	@PutMapping("/profile/edit-name")
-	//@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-	public ResponseEntity<User> editName(@RequestBody User user) {
-		User updateUser = userDetailsService.updateUser(user);
-		return new ResponseEntity<>(updateUser, HttpStatus.OK);
+	@PatchMapping(path = "/profile/{id}/{name}")
+	public ResponseEntity<User> partialUpdate(@PathVariable Long id, @PathVariable String name) {
+		User user = userRepository.findUserById(id);
+		user.setName(name);
+		userDetailsService.patchUser(user);
+		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
+
+	@PatchMapping(path = "/profile/{id}/username/{userName}")
+	public ResponseEntity<?> updateUserName(@PathVariable Long id, @PathVariable String userName) {
+		User user = userRepository.findUserById(id);
+		if (userRepository.existsByUsername(userName) && !user.getUsername().equals(userName)) {
+			return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse("Error: Username is already taken!"));
+		}
+		user.setUsername(userName);
+		userDetailsService.patchUser(user);
+		return new ResponseEntity<>(user, HttpStatus.OK);
+	}
+
+	@PatchMapping(path = "/profile/{id}/email/{email}")
+	public ResponseEntity<?> updateEmail(@PathVariable Long id, @PathVariable String email) {
+		User user = userRepository.findUserById(id);
+		if (userRepository.existsByEmail(email) && !user.getEmail().equals(email)) {
+			return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse("Error: Email is already taken!"));
+		}
+		user.setEmail(email);
+		userDetailsService.patchUser(user);
+		return new ResponseEntity<>(user, HttpStatus.OK);
+	}
+
+
+//	@PutMapping("/profile/edit-name")
+//	//@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+//	public ResponseEntity<User> editName(@RequestBody User user) {
+//		User updateUser = userDetailsService.updateUser(user);
+//		return new ResponseEntity<>(updateUser, HttpStatus.OK);
+//	}
 
 	@DeleteMapping("/admin/delete/username/{username}")
 	@PreAuthorize("hasRole('ADMIN')")

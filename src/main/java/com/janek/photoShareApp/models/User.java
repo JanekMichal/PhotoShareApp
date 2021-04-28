@@ -32,7 +32,6 @@ public class User {
 	@Size(max = 120)
 	private String password;
 
-
 	@Size(max = 20)
 	private String name = "Brak";
 

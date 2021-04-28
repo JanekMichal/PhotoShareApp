@@ -31,6 +31,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		return userRepository.save(user);
 	}
 
+	public User patchUser(User user) {
+		return userRepository.save(user);
+	}
+
 	public void deleteUser(String username) {
 		userRepository.deleteUserByUsername(username);
 	}
