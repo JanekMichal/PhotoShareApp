@@ -17,100 +17,91 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/test")
 public class UserController {
-	@Autowired
-	UserRepository userRepository;
+    @Autowired
+    UserRepository userRepository;
 
-	@Autowired
-	UserDetailsServiceImpl userDetailsService;
-//	@GetMapping("/all")
-//	public String allAccess() {
-//		return "Public cokolwiek.";
-//	}
-	
-	@GetMapping("/user")
-	@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-	public String userAccess() {
-		return "User Content.";
-	}
+    @Autowired
+    UserDetailsServiceImpl userDetailsService;
 
-	@GetMapping("/mod")
-	@PreAuthorize("hasRole('MODERATOR')")
-	public String moderatorAccess() {
-		return "Moderator Board.";
-	}
+    @GetMapping("/user")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public String userAccess() {
+        return "User Content.";
+    }
 
-	@GetMapping("/admin")
-	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<List<User>>adminAccess() {
-		List<User> allUsers = userRepository.findAll();
-		return new ResponseEntity<>(allUsers, HttpStatus.OK);
+    @GetMapping("/mod")
+    @PreAuthorize("hasRole('MODERATOR')")
+    public String moderatorAccess() {
+        return "Moderator Board.";
+    }
+
+    @GetMapping("/admin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<User>> adminAccess() {
+        List<User> allUsers = userRepository.findAll();
+        return new ResponseEntity<>(allUsers, HttpStatus.OK);
 //		return "Admin Board.";
-	}
+    }
 
-	@PatchMapping(path = "/profile/{id}/{name}")
-	public ResponseEntity<User> partialUpdate(@PathVariable Long id, @PathVariable String name) {
-		User user = userRepository.findUserById(id);
-		user.setName(name);
-		userDetailsService.patchUser(user);
-		return new ResponseEntity<>(user, HttpStatus.OK);
-	}
+    @GetMapping("/search/{name}")
+    public ResponseEntity<?> searchForUser(@PathVariable String name) {
+        List<User> searchedUsers = userRepository.findAllByName(name);
+        return new ResponseEntity<>(searchedUsers, HttpStatus.OK);
+    }
 
-	@PatchMapping(path = "/profile/{id}/username/{userName}")
-	public ResponseEntity<?> updateUserName(@PathVariable Long id, @PathVariable String userName) {
-		User user = userRepository.findUserById(id);
-		if (userRepository.existsByUsername(userName) && !user.getUsername().equals(userName)) {
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: Username is already taken!"));
-		}
-		user.setUsername(userName);
-		userDetailsService.patchUser(user);
-		return new ResponseEntity<>(user, HttpStatus.OK);
-	}
+    @GetMapping("/profile/{id}")
+    public ResponseEntity<User> getUserProfile(@PathVariable("id") Long id) {
+        User retUser = userDetailsService.getUserById(id);
+        return new ResponseEntity<>(retUser, HttpStatus.OK);
+    }
 
-	@PatchMapping(path = "/profile/{id}/email/{email}")
-	public ResponseEntity<?> updateEmail(@PathVariable Long id, @PathVariable String email) {
-		User user = userRepository.findUserById(id);
-		if (userRepository.existsByEmail(email) && !user.getEmail().equals(email)) {
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: Email is already taken!"));
-		}
-		user.setEmail(email);
-		userDetailsService.patchUser(user);
-		return new ResponseEntity<>(user, HttpStatus.OK);
-	}
+    @PatchMapping(path = "/profile/{id}/email/{email}")
+    public ResponseEntity<?> updateEmail(@PathVariable Long id, @PathVariable String email) {
+        User user = userRepository.findUserById(id);
+        if (userRepository.existsByEmail(email) && !user.getEmail().equals(email)) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Email is already taken!"));
+        }
+        user.setEmail(email);
+        userDetailsService.patchUser(user);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
 
+    @DeleteMapping("/admin/delete/username/{username}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> deleteUserByUsername(@PathVariable("username") String username) {
+        userDetailsService.deleteUser(username);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
-//	@PutMapping("/profile/edit-name")
-//	//@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-//	public ResponseEntity<User> editName(@RequestBody User user) {
-//		User updateUser = userDetailsService.updateUser(user);
-//		return new ResponseEntity<>(updateUser, HttpStatus.OK);
-//	}
+    @Transactional
+    @DeleteMapping("/admin/delete/id/{id}")
+    public ResponseEntity<?> deleteUserById(@PathVariable("id") Long id) {
+        userDetailsService.deleteUserById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
-	@DeleteMapping("/admin/delete/username/{username}")
-	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<?> deleteUserByUsername(@PathVariable("username") String username) {
-		userDetailsService.deleteUser(username);
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
+    @PatchMapping(path = "/profile/{id}/{name}")
+    public ResponseEntity<User> partialUpdate(@PathVariable Long id, @PathVariable String name) {
+        User user = userRepository.findUserById(id);
+        user.setName(name);
+        userDetailsService.patchUser(user);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
 
-	@Transactional
-	@DeleteMapping("/admin/delete/id/{id}")
-	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<?> deleteUserById(@PathVariable("id") Long id) {
-		userDetailsService.deleteUserById(id);
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
-
-	@GetMapping("/profile/{id}")
-	public ResponseEntity<User> getUserProfile(@PathVariable("id") Long id) {
-		User retUser = userDetailsService.getUserById(id);
-		return new ResponseEntity<>(retUser, HttpStatus.OK);
-	}
-
-
+    @PatchMapping(path = "/profile/{id}/username/{userName}")
+    public ResponseEntity<?> updateUserName(@PathVariable Long id, @PathVariable String userName) {
+        User user = userRepository.findUserById(id);
+        if (userRepository.existsByUsername(userName) && !user.getUsername().equals(userName)) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Username is already taken!"));
+        }
+        user.setUsername(userName);
+        userDetailsService.patchUser(user);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
 
 
 //	@GetMapping("/all")

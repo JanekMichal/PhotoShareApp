@@ -5,6 +5,7 @@ import java.util.Optional;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.janek.photoShareApp.models.User;
@@ -19,5 +20,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	void deleteUserByUsername(String username);
 	void deleteUserById(Long id);
 	User findUserById(Long id);
+	List<User> findAllByName(String name);
 
 }
