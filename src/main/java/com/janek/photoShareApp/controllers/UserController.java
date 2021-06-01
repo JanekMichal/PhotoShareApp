@@ -2,6 +2,7 @@ package com.janek.photoShareApp.controllers;
 
 import com.janek.photoShareApp.models.User;
 import com.janek.photoShareApp.payload.response.MessageResponse;
+import com.janek.photoShareApp.repository.ImageRepository;
 import com.janek.photoShareApp.repository.UserRepository;
 import com.janek.photoShareApp.security.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ public class UserController {
 
     @Autowired
     UserDetailsServiceImpl userDetailsService;
+
+    @Autowired
+    ImageRepository imageRepository;
 
     @GetMapping("/user")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
@@ -78,6 +82,7 @@ public class UserController {
     @Transactional
     @DeleteMapping("/admin/delete/id/{id}")
     public ResponseEntity<?> deleteUserById(@PathVariable("id") Long id) {
+        imageRepository.deleteAllByOwnerId(id);
         userDetailsService.deleteUserById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
