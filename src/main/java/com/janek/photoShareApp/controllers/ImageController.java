@@ -2,6 +2,7 @@ package com.janek.photoShareApp.controllers;
 
 import com.janek.photoShareApp.models.Follow;
 import com.janek.photoShareApp.models.ImageModel;
+import com.janek.photoShareApp.payload.response.MessageResponse;
 import com.janek.photoShareApp.repository.FollowRepository;
 import com.janek.photoShareApp.repository.ImageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,8 +54,45 @@ public class ImageController {
         }
     }
 
+//    @PutMapping("/change_description")
+//    public ResponseEntity<?> changeDescription(@RequestBody ImageModel changedDescription) {
+//        imageRepository.save(changedDescription);
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
+
+    @PatchMapping("/change_description/{imageId}")
+    public ResponseEntity<?> changeDescription(@RequestBody String description2,
+                                               @PathVariable("imageId") Long imageId
+                                               ) {
+
+        Optional<ImageModel> imageModel = imageRepository.findById(imageId);
+        if (imageModel.isPresent()) {
+            imageModel.get().setDescription(description2);
+            imageRepository.save(imageModel.get());
+            return new ResponseEntity<>(imageModel, HttpStatus.OK);
+        } else {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("We couldn't find this image in our database :("));
+        }
+    }
+
+
+//    @PatchMapping(path = "/profile/{id}/username/{userName}")
+//    public ResponseEntity<?> updateUserName(@PathVariable Long id, @PathVariable String userName) {
+//        User user = userRepository.findUserById(id);
+//        if (userRepository.existsByUsername(userName) && !user.getUsername().equals(userName)) {
+//            return ResponseEntity
+//                    .badRequest()
+//                    .body(new MessageResponse("Error: Username is already taken!"));
+//        }
+//        user.setUsername(userName);
+//        userDetailsService.patchUser(user);
+//        return new ResponseEntity<>(user, HttpStatus.OK);
+//    }
+
     @PostMapping("/upload/{userId}")
-    public ResponseEntity<?> uploadImage(@RequestParam("imageFile") MultipartFile file, @PathVariable Long userId) throws IOException {
+    public ResponseEntity<?> uploadImage(@RequestParam("imageFile") MultipartFile file, @PathVariable("userId") Long userId) throws IOException {
         System.out.println("Original Image Byte Size - " + file.getBytes().length);
         ImageModel img = new ImageModel(file.getOriginalFilename(), file.getContentType(),
                 compressBytes(file.getBytes()), userId);
@@ -84,7 +122,7 @@ public class ImageController {
 
     @GetMapping(path = {"/get/allphotos/{id}"})
     public ResponseEntity<List<ImageModel>> getAllImages(@PathVariable("id") Long id) {
-        final List<ImageModel> retrievedImages = imageRepository.findAllByOwnerId(id);
+        final List<ImageModel> retrievedImages = imageRepository.findAllByOwnerIdOrderByIdDesc(id);
         for (ImageModel imageModel : retrievedImages) {
             imageModel.setPicByte(decompressBytes(imageModel.getPicByte()));
             //imageModel.setOwnerId(1L);

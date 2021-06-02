@@ -18,7 +18,7 @@ public interface ImageRepository extends JpaRepository<ImageModel, Long> {
 
     void deleteAllByOwnerId(Long ownerId);
 
-    List<ImageModel> findAllByOwnerId(Long ownerId);
+    List<ImageModel> findAllByOwnerIdOrderByIdDesc(Long ownerId);
 
     //TODO: sprawdzić czy to działa
     List<ImageModel> findTop10ByOwnerIdInOrderByIdDesc(Collection<Long> ownerId);

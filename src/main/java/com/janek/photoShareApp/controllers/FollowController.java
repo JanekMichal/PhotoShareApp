@@ -66,6 +66,4 @@ public class FollowController {
     public ResponseEntity<?> getFollowingCount(@PathVariable("follower_id") Long followerId) {
         return new ResponseEntity<>(followService.getFollowingCount(followerId), HttpStatus.OK);
     }
-
-
 }

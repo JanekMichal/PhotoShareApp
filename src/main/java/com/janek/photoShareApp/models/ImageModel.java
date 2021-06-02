@@ -31,6 +31,8 @@ public class ImageModel {
     @Column(name = "owner_id")
     private Long ownerId;
 
+    @Column(name = "description")
+    private String description;
 
     //image bytes can have large lengths so we specify a value
     //which is more than the default length for picByte column
@@ -71,7 +73,13 @@ public class ImageModel {
 
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
+    }
 
+    public String getDescription() {
+        return description;
+    }
 
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
