@@ -25,7 +25,7 @@ public class FollowController {
     @Autowired
     UserRepository userRepository;
 
-    //TODO: to jest do poprawy
+
     @GetMapping("/get_followers/{follower_id}")
     public ResponseEntity<?> getFollowers(@PathVariable("follower_id") Long followerId) {
         return new ResponseEntity<>(followService.getFollowers(followerId), HttpStatus.OK);

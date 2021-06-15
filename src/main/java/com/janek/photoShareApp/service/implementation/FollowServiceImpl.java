@@ -84,19 +84,4 @@ public class FollowServiceImpl implements FollowService {
         return new FollowResponse(false);
 
     }
-
-//    @Override
-//    public void followUser(Long userId, User currentUser) {
-//        User follower = userRepository.findUserById(currentUser.getId());
-//        User following = userRepository.findUserById(userId);
-//
-//        //TODO: check if user is already followed
-//        //Optional<Follow> follow = followRepository.
-//
-//        Follow followObject = new Follow();
-//        followObject.setFollower(follower);
-//        followObject.setFollowing(following);
-//        followRepository.save(followObject);
-//
-//    }
 }
