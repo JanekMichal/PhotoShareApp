@@ -1,12 +1,11 @@
 # PhotoShareApp
 
+Project for Advanced Internet Applications subject at University classes
 
-Competence project for university classes
-
-![](screenshots/webshop.gif)
+![](screenshots/main_page.png)
 
 ## Requirements
-Webshop works with Django 2.2.7. Was tested with Python 3.7 and 3.8
+
 
 ## Technologies
 Mainly Django, Bootstrap and PostgreSQL.
