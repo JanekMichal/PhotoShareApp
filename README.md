@@ -45,3 +45,7 @@ After running server application will be available in your browser under this UR
 ```bash
 python3 manage.py runserver
 ```
+
+* Pay safely with Paypal. If you won't be satisfied - our staff may validate your complaiment and then give you refund
+
+> ![](screenshots/paypal.png)
