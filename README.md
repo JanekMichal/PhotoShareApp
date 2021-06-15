@@ -14,17 +14,23 @@ Spring boot, PostgreSQL and Bootstrap.
 > ![](screenshots/description.png)
 * Editing profile data
 > ![](screenshots/edit_profile.png)
+> ![](screenshots/profile.png)
 * Admin board with all users and ability to modify theri accounts
 > ![](screenshots/admin_board.png)
 * Seraching for user with name
 > ![](screenshots/search.png)
-
-
-> * Registering new account with validation
+* Registering new account with validation
 > ![](screenshots/register.png)
-* Login and session with JWT
-* Uploading your own photos
-* Ability to follow, unfollow other users
 
+* View profiles of other users
+> ![](screenshots/animals.png)
+
+* Login and session with JWT
+
+* Uploading your own photos
+
+* Ability to follow, unfollow other users
+> ![](screenshots/followers.png)
+> ![](screenshots/tortoise.png)
 
 
