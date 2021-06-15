@@ -18,12 +18,13 @@ Spring boot, PostgreSQL and Bootstrap.
 > ![](screenshots/admin_board.png)
 * Seraching for user with name
 > ![](screenshots/search.png)
-* Ability to follow, unfollow other users
-> ![](screenshots/follow.png)
+
+
 > * Registering new account with validation
 > ![](screenshots/register.png)
 * Login and session with JWT
 * Uploading your own photos
+* Ability to follow, unfollow other users
 
 
 
