@@ -9,26 +9,28 @@ Spring boot, PostgreSQL and Bootstrap.
 
 ## Features
 * Feed with photos from other users
-> ![](screenshots/register.png)
+> ![](screenshots/feed.png)
+* Editing Photos descriptions
+> ![](screenshots/description.png)
+* Editing profile data
+> ![](screenshots/edit_profile.png)
+> ![](screenshots/profile.png)
+* Admin board with all users and ability to modify theri accounts
+> ![](screenshots/admin_board.png)
+* Seraching for user with name
+> ![](screenshots/search.png)
 * Registering new account with validation
-> ![](screenshots/paypal.png)
+> ![](screenshots/register.png)
+
+* View profiles of other users
+> ![](screenshots/animals.png)
+
 * Login and session with JWT
 
 * Uploading your own photos
 
-* Editing Photos descriptions
-
-* Editing profile data
-
-* Admin board with all users
-
-* Seraching for user with name
-
 * Ability to follow, unfollow other users
-
-
-
-
-* Pay safely with Paypal. If you won't be satisfied - our staff may validate your complaiment and then give you refund
+> ![](screenshots/followers.png)
+> ![](screenshots/tortoise.png)
 
 
