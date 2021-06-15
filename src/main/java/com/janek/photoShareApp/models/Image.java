@@ -4,13 +4,13 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "image_table")
-public class ImageModel {
+public class Image {
 
-    public ImageModel() {
+    public Image() {
         super();
     }
 
-    public ImageModel(String name, String type, byte[] picByte, Long ownerId) {
+    public Image(String name, String type, byte[] picByte, Long ownerId) {
         this.name = name;
         this.type = type;
         this.picByte = picByte;

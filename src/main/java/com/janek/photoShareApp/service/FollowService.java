@@ -2,7 +2,6 @@ package com.janek.photoShareApp.service;
 
 import com.janek.photoShareApp.models.User;
 import com.janek.photoShareApp.payload.follow.FollowResponse;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

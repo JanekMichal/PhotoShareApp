@@ -27,7 +27,7 @@ public class FollowServiceImpl implements FollowService {
         User following = userRepository.findUserById(followedUserId);
 
         //TODO: check if user is already followed
-        //Optional<Follow> follow = followRepository.
+        //Optional<Follow> follow = followRepository
 
 
         Follow followObject = new Follow();

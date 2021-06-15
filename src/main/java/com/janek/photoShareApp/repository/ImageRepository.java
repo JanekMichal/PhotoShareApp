@@ -1,24 +1,24 @@
 package com.janek.photoShareApp.repository;
 
-import com.janek.photoShareApp.models.ImageModel;
+import com.janek.photoShareApp.models.Image;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-public interface ImageRepository extends JpaRepository<ImageModel, Long> {
-    Optional<ImageModel> findByName(String name);
+public interface ImageRepository extends JpaRepository<Image, Long> {
+    Optional<Image> findByName(String name);
 
     @Override
-    Optional<ImageModel> findById(Long aLong);
+    Optional<Image> findById(Long aLong);
 
     @Override
     void deleteById(Long aLong);
 
     void deleteAllByOwnerId(Long ownerId);
 
-    List<ImageModel> findAllByOwnerIdOrderByIdDesc(Long ownerId);
+    List<Image> findAllByOwnerIdOrderByIdDesc(Long ownerId);
 
-    List<ImageModel> findTop10ByOwnerIdInOrderByIdDesc(Collection<Long> ownerId);
+    List<Image> findTop10ByOwnerIdInOrderByIdDesc(Collection<Long> ownerId);
 }
