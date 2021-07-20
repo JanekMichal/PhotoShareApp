@@ -66,7 +66,7 @@ public class UserController {
     @GetMapping("/search/{name}")
     @PreAuthorize("hasRole('USER')or hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<?> searchForUser(@PathVariable String name) {
-        List<User> searchedUsers = userRepository.findAllByName(name);
+        List<User> searchedUsers = userRepository.findAllByUsernameIgnoreCase(name);
         return new ResponseEntity<>(searchedUsers, HttpStatus.OK);
     }
 

@@ -1,6 +1,5 @@
 package com.janek.photoShareApp.models;
 
-
 import javax.persistence.*;
 
 @Entity
@@ -14,11 +13,11 @@ public class Follow {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "follower_id")
     private User follower;
-    
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "following_id")
     private User following;

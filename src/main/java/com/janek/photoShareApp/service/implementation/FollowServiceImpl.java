@@ -26,10 +26,6 @@ public class FollowServiceImpl implements FollowService {
         User follower = userRepository.findUserById(currentUserId);
         User following = userRepository.findUserById(followedUserId);
 
-        //TODO: check if user is already followed
-        //Optional<Follow> follow = followRepository
-
-
         Follow followObject = new Follow();
         followObject.setFollower(follower);
         followObject.setFollowing(following);
@@ -54,7 +50,6 @@ public class FollowServiceImpl implements FollowService {
         return userList;
     }
 
-    //TODO: to jest do poprawy
     @Override
     public List<User> getFollowers(Long followerId) {
         List<Follow> followers = followRepository.findAllByFollowingId(followerId);
