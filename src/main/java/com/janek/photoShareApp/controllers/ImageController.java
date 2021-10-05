@@ -71,7 +71,7 @@ public class ImageController {
     public ResponseEntity<?> uploadImage(@RequestParam("imageFile") MultipartFile file, @PathVariable("userId") Long userId) throws IOException {
         System.out.println("Original Image Byte Size - " + file.getBytes().length);
         Image img = new Image(file.getOriginalFilename(), file.getContentType(),
-                compressBytes(file.getBytes()), userId);
+                userId, compressBytes(file.getBytes()));
         imageRepository.save(img);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -80,7 +80,7 @@ public class ImageController {
     public Image getImageById(@PathVariable("id") Long id) {
         final Optional<Image> retrievedImage = imageRepository.findById(id);
         return new Image(retrievedImage.get().getName(), retrievedImage.get().getType(),
-                decompressBytes(retrievedImage.get().getPicByte()), retrievedImage.get().getOwnerId());
+                retrievedImage.get().getOwnerId(), retrievedImage.get().getDescription(), decompressBytes(retrievedImage.get().getPicByte()));
     }
 
     @DeleteMapping(path = "/delete/{id}")

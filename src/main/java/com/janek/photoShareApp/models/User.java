@@ -33,7 +33,9 @@ public class User {
 	private String password;
 
 	@Size(max = 20)
-	private String name = "Brak";
+	private String name = "None";
+
+
 
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(	name = "user_roles", 

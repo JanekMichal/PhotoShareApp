@@ -10,11 +10,19 @@ public class Image {
         super();
     }
 
-    public Image(String name, String type, byte[] picByte, Long ownerId) {
+    public Image(String name, String type, Long ownerId, byte[] picByte) {
         this.name = name;
         this.type = type;
-        this.picByte = picByte;
         this.ownerId = ownerId;
+        this.picByte = picByte;
+    }
+
+    public Image(String name, String type, Long ownerId, String description, byte[] picByte) {
+        this.name = name;
+        this.type = type;
+        this.ownerId = ownerId;
+        this.description = description;
+        this.picByte = picByte;
     }
 
     @Id
