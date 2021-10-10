@@ -1,8 +1,10 @@
 package com.janek.photoShareApp.controllers;
 
+import com.janek.photoShareApp.models.Comment;
 import com.janek.photoShareApp.models.Follow;
 import com.janek.photoShareApp.models.Image;
 import com.janek.photoShareApp.payload.response.MessageResponse;
+import com.janek.photoShareApp.repository.CommentRepository;
 import com.janek.photoShareApp.repository.FollowRepository;
 import com.janek.photoShareApp.repository.ImageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,9 @@ public class ImageController {
 
     @Autowired
     FollowRepository followRepository;
+
+    @Autowired
+    CommentRepository commentRepository;
 
     @GetMapping("/get_feed_photos/{userId}")
     public ResponseEntity<?> getFeedImages(@PathVariable("userId") Long userId) {
@@ -68,7 +73,9 @@ public class ImageController {
     }
 
     @PostMapping("/upload/{userId}")
-    public ResponseEntity<?> uploadImage(@RequestParam("imageFile") MultipartFile file, @PathVariable("userId") Long userId) throws IOException {
+    public ResponseEntity<?> uploadImage(
+            @RequestParam("imageFile") MultipartFile file,
+            @PathVariable("userId") Long userId) throws IOException {
         System.out.println("Original Image Byte Size - " + file.getBytes().length);
         Image img = new Image(file.getOriginalFilename(), file.getContentType(),
                 userId, compressBytes(file.getBytes()));
@@ -133,4 +140,42 @@ public class ImageController {
         }
         return outputStream.toByteArray();
     }
+
+    @PostMapping("/add_comment/{photoId}/{creatorId}")
+    public ResponseEntity<?> addComment(
+            @PathVariable("photoId") Long photoId,
+            @PathVariable("creatorId") Long createdBy,
+            @RequestBody String description) {
+
+        Comment comment = new Comment(description, createdBy, photoId);
+
+        commentRepository.save(comment);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/get_comments/{photo_id}")
+    public ResponseEntity<List<Comment>> getComments(@PathVariable("photo_id") Long photoId) {
+        List<Comment> commentsList = commentRepository.getCommentByPhotoId(photoId);
+        return new ResponseEntity<>(commentsList, HttpStatus.OK);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
