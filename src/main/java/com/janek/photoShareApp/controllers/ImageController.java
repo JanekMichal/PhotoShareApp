@@ -160,6 +160,14 @@ public class ImageController {
         return new ResponseEntity<>(commentsList, HttpStatus.OK);
     }
 
+    @DeleteMapping("/delete_comment/{comment_id}")
+    public ResponseEntity<?> deleteComment(@PathVariable("comment_id") Long photoId) {
+        commentRepository.deleteById(photoId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+
 
 
 

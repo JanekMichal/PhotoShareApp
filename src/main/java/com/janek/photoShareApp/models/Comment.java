@@ -1,13 +1,7 @@
 package com.janek.photoShareApp.models;
 
 
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -16,6 +10,7 @@ import javax.validation.constraints.Size;
 public class Comment {
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -24,14 +19,14 @@ public class Comment {
     private String description;
 
     @NotNull
-    private Long createdBy;
+    private Long ownerId;
 
     @NotNull
     private Long photoId;
 
-    public Comment(String description, Long createdBy, Long photoId) {
+    public Comment(String description, Long ownerId, Long photoId) {
         this.description = description;
-        this.createdBy = createdBy;
+        this.ownerId = ownerId;
         this.photoId = photoId;
     }
 
@@ -39,6 +34,9 @@ public class Comment {
 
     }
 
+    public Long getId() {
+        return id;
+    }
 
     public String getDescription() {
         return description;
@@ -48,12 +46,12 @@ public class Comment {
         this.description = description;
     }
 
-    public Long getCreatedBy() {
-        return createdBy;
+    public Long getOwnerId() {
+        return ownerId;
     }
 
-    public void setCreatedBy(Long createdBy) {
-        this.createdBy = createdBy;
+    public void setOwnerId(Long createdBy) {
+        this.ownerId = createdBy;
     }
 
     public Long getPhotoId() {
