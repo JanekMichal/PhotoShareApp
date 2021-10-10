@@ -166,7 +166,12 @@ public class ImageController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping("/comments_count/{photo_id}")
+    public ResponseEntity<Long> getCommentsCount(@PathVariable("photo_id") Long photoId) {
+        Long commentsCount = commentRepository.countAllByPhotoId(photoId);
 
+        return new ResponseEntity<>(commentsCount, HttpStatus.OK);
+    }
 
 
 

@@ -11,5 +11,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     List<Comment> getCommentByPhotoId(Long photoId);
 
-
+    Long countAllByPhotoId(Long photoId);
 }
