@@ -5,6 +5,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.sql.Timestamp;
+import java.util.Date;
 
 @Entity
 public class Comment {
@@ -24,14 +26,27 @@ public class Comment {
     @NotNull
     private Long photoId;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name="date")
+    private Date commentDate;
+
     public Comment(String description, Long ownerId, Long photoId) {
         this.description = description;
         this.ownerId = ownerId;
         this.photoId = photoId;
+        this.commentDate = new Date();
     }
 
     public Comment() {
 
+    }
+
+    public Date getCommentDate() {
+        return commentDate;
+    }
+
+    public void setCommentDate(Date commentDate) {
+        this.commentDate = commentDate;
     }
 
     public Long getId() {
