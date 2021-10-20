@@ -1,6 +1,5 @@
 package com.janek.photoShareApp.controllers;
 
-import com.janek.photoShareApp.models.Comment;
 import com.janek.photoShareApp.models.Follow;
 import com.janek.photoShareApp.models.Image;
 import com.janek.photoShareApp.payload.response.MessageResponse;
@@ -140,55 +139,4 @@ public class ImageController {
         }
         return outputStream.toByteArray();
     }
-
-    @PostMapping("/add_comment/{photoId}/{creatorId}")
-    public ResponseEntity<?> addComment(
-            @PathVariable("photoId") Long photoId,
-            @PathVariable("creatorId") Long createdBy,
-            @RequestBody String description) {
-
-        Comment comment = new Comment(description, createdBy, photoId);
-
-        commentRepository.save(comment);
-
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @GetMapping("/get_comments/{photo_id}")
-    public ResponseEntity<List<Comment>> getComments(@PathVariable("photo_id") Long photoId) {
-        List<Comment> commentsList = commentRepository.getCommentByPhotoId(photoId);
-        return new ResponseEntity<>(commentsList, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/delete_comment/{comment_id}")
-    public ResponseEntity<?> deleteComment(@PathVariable("comment_id") Long photoId) {
-        commentRepository.deleteById(photoId);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @GetMapping("/comments_count/{photo_id}")
-    public ResponseEntity<Long> getCommentsCount(@PathVariable("photo_id") Long photoId) {
-        Long commentsCount = commentRepository.countAllByPhotoIdOrderById(photoId);
-
-        return new ResponseEntity<>(commentsCount, HttpStatus.OK);
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

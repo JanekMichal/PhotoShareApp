@@ -21,6 +21,4 @@ public interface FollowService {
     int getFollowingCount(Long followerId);
 
     FollowResponse isFollowing(Long currentUserId, Long followedUserId);
-
-
 }

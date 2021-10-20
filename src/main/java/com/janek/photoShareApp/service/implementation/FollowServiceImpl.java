@@ -78,6 +78,5 @@ public class FollowServiceImpl implements FollowService {
             return new FollowResponse(true);
         }
         return new FollowResponse(false);
-
     }
 }

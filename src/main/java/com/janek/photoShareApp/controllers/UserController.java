@@ -36,7 +36,7 @@ public class UserController {
     }
 
     @GetMapping("/page_users/{page}")
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<User>> getUsersPage(@PathVariable("page") int pageNumber, UserPage userPage) {
         userPage.setPageNumber(pageNumber);
         List<User> usersPageList = userService.getUsersPage(userPage).getContent();
