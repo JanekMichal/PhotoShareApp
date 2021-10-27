@@ -1,9 +1,14 @@
 package com.janek.photoShareApp.models;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "image_table")
+@Getter
+@Setter
 public class Image {
 
     public Image() {
@@ -44,50 +49,6 @@ public class Image {
 
     //image bytes can have large lengths so we specify a value
     //which is more than the default length for picByte column
-    @Column(name = "picByte", length = 1000)
+    @Column(name = "pic_byte", length = 1000)
     private byte[] picByte;
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public byte[] getPicByte() {
-        return picByte;
-    }
-
-    public void setPicByte(byte[] picByte) {
-        this.picByte = picByte;
-    }
-
-    public Long getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 }

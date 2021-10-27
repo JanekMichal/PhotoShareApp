@@ -1,14 +1,18 @@
 package com.janek.photoShareApp.models;
 
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity
+@Getter
+@Setter
 public class Comment {
 
     @Id
@@ -27,7 +31,7 @@ public class Comment {
     private Long photoId;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="date")
+    @Column(name = "date")
     private Date commentDate;
 
     public Comment(String description, Long ownerId, Long photoId) {
@@ -39,41 +43,5 @@ public class Comment {
 
     public Comment() {
 
-    }
-
-    public Date getCommentDate() {
-        return commentDate;
-    }
-
-    public void setCommentDate(Date commentDate) {
-        this.commentDate = commentDate;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Long getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(Long createdBy) {
-        this.ownerId = createdBy;
-    }
-
-    public Long getPhotoId() {
-        return photoId;
-    }
-
-    public void setPhotoId(Long photoId) {
-        this.photoId = photoId;
     }
 }

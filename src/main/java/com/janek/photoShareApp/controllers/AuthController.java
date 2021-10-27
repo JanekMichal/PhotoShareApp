@@ -89,7 +89,7 @@ public class AuthController {
                     .body(new MessageResponse("Error: Email is already in use!"));
         }
 
-        User user = new User(signUpRequest.getUsername(),
+        User newUser = new User(signUpRequest.getUsername(),
                 signUpRequest.getEmail(),
                 encoder.encode(signUpRequest.getPassword()));
 
@@ -123,8 +123,8 @@ public class AuthController {
             });
         }
 
-        user.setRoles(roles);
-        userRepository.save(user);
+        newUser.setRoles(roles);
+        userRepository.save(newUser);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
