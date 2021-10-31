@@ -28,16 +28,16 @@ public class Comment {
     private Long ownerId;
 
     @NotNull
-    private Long photoId;
+    private Long imageId;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "date")
     private Date commentDate;
 
-    public Comment(String description, Long ownerId, Long photoId) {
+    public Comment(String description, Long ownerId, Long imageId) {
         this.description = description;
         this.ownerId = ownerId;
-        this.photoId = photoId;
+        this.imageId = imageId;
         this.commentDate = new Date();
     }
 

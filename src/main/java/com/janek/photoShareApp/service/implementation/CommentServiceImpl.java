@@ -27,6 +27,6 @@ public class CommentServiceImpl implements CommentService {
         Pageable pageable = PageRequest.of(commentPage.getPageNumber(),
                 commentPage.getPageSize(), sort);
 
-        return commentRepository.getCommentsByPhotoId(photoId, pageable);
+        return commentRepository.getCommentsByImageId(photoId, pageable);
     }
 }

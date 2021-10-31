@@ -2,24 +2,26 @@ package com.janek.photoShareApp.controllers;
 
 import com.janek.photoShareApp.models.Follow;
 import com.janek.photoShareApp.models.Image;
+import com.janek.photoShareApp.models.ProfileImage;
 import com.janek.photoShareApp.payload.response.MessageResponse;
 import com.janek.photoShareApp.repository.CommentRepository;
 import com.janek.photoShareApp.repository.FollowRepository;
 import com.janek.photoShareApp.repository.ImageRepository;
+import com.janek.photoShareApp.repository.ProfileImageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.zip.DataFormatException;
-import java.util.zip.Deflater;
-import java.util.zip.Inflater;
+
+import static com.janek.photoShareApp.service.ImageCompression.compressBytes;
+import static com.janek.photoShareApp.service.ImageCompression.decompressBytes;
 
 
 @RestController
@@ -35,7 +37,10 @@ public class ImageController {
     @Autowired
     CommentRepository commentRepository;
 
-    @GetMapping("/get_feed_photos/{userId}")
+    @Autowired
+    ProfileImageRepository profileImageRepository;
+
+    @GetMapping("/get_feed_images/{userId}")
     public ResponseEntity<?> getFeedImages(@PathVariable("userId") Long userId) {
         List<Follow> listOfAllFollowedUsers = followRepository.findAllByFollowerId(userId);
         List<Long> listOfIdAllFollowedUsers = new ArrayList<>();
@@ -56,9 +61,9 @@ public class ImageController {
         }
     }
 
-    @PatchMapping("/change_description/{imageId}")
+    @PatchMapping("/change_description/{image_id}")
     public ResponseEntity<?> changeDescription(@RequestBody String description2,
-                                               @PathVariable("imageId") Long imageId) {
+                                               @PathVariable("image_id") Long imageId) {
         Optional<Image> imageModel = imageRepository.findById(imageId);
         if (imageModel.isPresent()) {
             imageModel.get().setDescription(description2);
@@ -71,14 +76,15 @@ public class ImageController {
         }
     }
 
-    @PostMapping("/upload/{userId}")
+    @PostMapping("/upload_image/{user_id}")
     public ResponseEntity<?> uploadImage(
             @RequestParam("imageFile") MultipartFile file,
-            @PathVariable("userId") Long userId) throws IOException {
-        System.out.println("Original Image Byte Size - " + file.getBytes().length);
+            @PathVariable("user_id") Long userId) throws IOException {
+
         Image img = new Image(file.getOriginalFilename(), file.getContentType(),
                 userId, compressBytes(file.getBytes()));
         imageRepository.save(img);
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -90,12 +96,12 @@ public class ImageController {
     }
 
     @DeleteMapping(path = "/delete/{id}")
-    public ResponseEntity<?> deletePhotoById(@PathVariable("id") Long id) {
+    public ResponseEntity<?> deleteImageById(@PathVariable("id") Long id) {
         imageRepository.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping(path = {"/get/allphotos/{id}"})
+    @GetMapping(path = {"/get/all_images/{id}"})
     public ResponseEntity<List<Image>> getAllImages(@PathVariable("id") Long id) {
         final List<Image> retrievedImages = imageRepository.findAllByOwnerIdOrderByIdDesc(id);
         for (Image image : retrievedImages) {
@@ -104,39 +110,30 @@ public class ImageController {
         return new ResponseEntity<>(retrievedImages, HttpStatus.OK);
     }
 
-    // compress the image bytes before storing it in the database
-    public static byte[] compressBytes(byte[] data) {
-        Deflater deflater = new Deflater();
-        deflater.setInput(data);
-        deflater.finish();
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-        byte[] buffer = new byte[1024];
-        while (!deflater.finished()) {
-            int count = deflater.deflate(buffer);
-            outputStream.write(buffer, 0, count);
+    @Transactional
+    @PostMapping("/upload_profile_image/{user_id}")
+    public ResponseEntity<?> uploadProfileImage(
+            @RequestParam("imageFile") MultipartFile file,
+            @PathVariable("user_id") Long userId) throws IOException {
+
+        if (profileImageRepository.existsByOwnerId(userId)) {
+            profileImageRepository.deleteByOwnerId(userId);
         }
-        try {
-            outputStream.close();
-        } catch (IOException ignored) {
-        }
-        System.out.println("Compressed Image Byte Size - " + outputStream.toByteArray().length);
-        return outputStream.toByteArray();
+        ProfileImage img = new ProfileImage(file.getOriginalFilename(), file.getContentType(),
+                userId, compressBytes(file.getBytes()));
+        profileImageRepository.save(img);
+
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    // uncompress the image bytes before returning it to the angular application
-    public static byte[] decompressBytes(byte[] data) {
-        Inflater inflater = new Inflater();
-        inflater.setInput(data);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-        byte[] buffer = new byte[1024];
-        try {
-            while (!inflater.finished()) {
-                int count = inflater.inflate(buffer);
-                outputStream.write(buffer, 0, count);
-            }
-            outputStream.close();
-        } catch (IOException | DataFormatException ignored) {
-        }
-        return outputStream.toByteArray();
+    @GetMapping("/get_profile_image/{user_id}")
+    public ProfileImage getProfileImageById(@PathVariable("user_id") Long userId) {
+        final Optional<ProfileImage> retrievedProfileImage = profileImageRepository.getByOwnerId(userId);
+
+        return retrievedProfileImage.map(
+                        profileImage -> new ProfileImage(profileImage.getName(), profileImage.getType(),
+                                profileImage.getOwnerId(), decompressBytes(profileImage.getPicByte()))).
+                orElseThrow(() -> new RuntimeException("Image not found"));
     }
 }

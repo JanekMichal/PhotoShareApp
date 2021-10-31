@@ -10,8 +10,8 @@ import java.util.List;
 
 @Repository
 public interface CommentRepository extends PagingAndSortingRepository<Comment, Long> {
-    List<Comment> getCommentByPhotoId(Long photoId);
-    Long countAllByPhotoIdOrderById(Long photoId);
-    Page<Comment> getCommentsByPhotoId(Long photoId, Pageable pageable);
-    List<Comment> getCommentsByPhotoIdOrderByCommentDateDesc(Long photoId);
+    List<Comment> getCommentByImageId(Long photoId);
+    Long countAllByImageIdOrderById(Long photoId);
+    Page<Comment> getCommentsByImageId(Long photoId, Pageable pageable);
+    List<Comment> getCommentsByImageIdOrderByCommentDateDesc(Long photoId);
 }

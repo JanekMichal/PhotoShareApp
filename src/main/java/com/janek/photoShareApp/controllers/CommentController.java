@@ -4,9 +4,7 @@ import com.janek.photoShareApp.models.Comment;
 import com.janek.photoShareApp.models.CommentPage;
 import com.janek.photoShareApp.repository.CommentRepository;
 import com.janek.photoShareApp.service.CommentService;
-import com.janek.photoShareApp.service.implementation.CommentServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,7 +51,7 @@ public class CommentController {
 
     @GetMapping("/get_comments/{photo_id}")
     public ResponseEntity<List<Comment>> getComments(@PathVariable("photo_id") Long photoId) {
-        List<Comment> commentsList = commentRepository.getCommentsByPhotoIdOrderByCommentDateDesc(photoId);
+        List<Comment> commentsList = commentRepository.getCommentsByImageIdOrderByCommentDateDesc(photoId);
 
         return new ResponseEntity<>(commentsList, HttpStatus.OK);
     }
@@ -66,7 +64,7 @@ public class CommentController {
 
     @GetMapping("/comments_count/{photo_id}")
     public ResponseEntity<Long> getCommentsCount(@PathVariable("photo_id") Long photoId) {
-        Long commentsCount = commentRepository.countAllByPhotoIdOrderById(photoId);
+        Long commentsCount = commentRepository.countAllByImageIdOrderById(photoId);
 
         return new ResponseEntity<>(commentsCount, HttpStatus.OK);
     }
