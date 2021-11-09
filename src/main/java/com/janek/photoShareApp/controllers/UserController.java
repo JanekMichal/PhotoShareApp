@@ -1,11 +1,14 @@
 package com.janek.photoShareApp.controllers;
 
+import com.janek.photoShareApp.models.ERole;
+import com.janek.photoShareApp.models.Role;
 import com.janek.photoShareApp.models.User;
 import com.janek.photoShareApp.models.UserPage;
 import com.janek.photoShareApp.payload.request.UserDataUpdateRequest;
 import com.janek.photoShareApp.payload.request.UserPasswordUpdateRequest;
 import com.janek.photoShareApp.payload.response.MessageResponse;
 import com.janek.photoShareApp.repository.ImageRepository;
+import com.janek.photoShareApp.repository.RoleRepository;
 import com.janek.photoShareApp.repository.UserRepository;
 import com.janek.photoShareApp.security.jwt.JwtUtils;
 import com.janek.photoShareApp.security.services.UserDetailsServiceImpl;
@@ -18,8 +21,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -36,6 +41,9 @@ public class UserController {
 
     @Autowired
     PasswordEncoder encoder;
+
+    @Autowired
+    RoleRepository roleRepository;
 
     private final UserService userService;
 
@@ -109,7 +117,7 @@ public class UserController {
     @Transactional
     @DeleteMapping("delete_user/{id}")
     //@PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> deleteUser (@PathVariable("id") Long userId) {
+    public ResponseEntity<?> deleteUser(@PathVariable("id") Long userId) {
         userRepository.deleteUserById(userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -191,10 +199,56 @@ public class UserController {
                                                 @RequestBody UserPasswordUpdateRequest userPasswordUpdateRequest) {
 
         User user = userRepository.findUserById(userId);
-
         user.setPassword(encoder.encode(userPasswordUpdateRequest.getPassword()));
-
         userDetailsService.patchUser(user);
+
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @Transactional
+    @PatchMapping("give_moderator_role/{id}")
+    public ResponseEntity<?> giveModeratorRole(@PathVariable("id") Long userId) {
+
+        User user = userRepository.findUserById(userId);
+        Set<Role> roles = new HashSet<>();
+        Role moderatorRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
+                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+
+        roles.add(moderatorRole);
+        user.setRoles(roles);
+        userRepository.save(user);
+
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @Transactional
+    @PatchMapping("give_admin_role/{id}")
+    public ResponseEntity<?> giveAdminRole(@PathVariable("id") Long userId) {
+
+        User user = userRepository.findUserById(userId);
+        Set<Role> roles = new HashSet<>();
+        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
+                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+
+        roles.add(adminRole);
+        user.setRoles(roles);
+        userRepository.save(user);
+
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @Transactional
+    @PatchMapping("give_user_role/{id}")
+    public ResponseEntity<?> giveUserRole(@PathVariable("id") Long userId) {
+
+        User user = userRepository.findUserById(userId);
+        Set<Role> roles = new HashSet<>();
+        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+
+        roles.add(userRole);
+        user.setRoles(roles);
+        userRepository.save(user);
 
         return new ResponseEntity<>(user, HttpStatus.OK);
     }

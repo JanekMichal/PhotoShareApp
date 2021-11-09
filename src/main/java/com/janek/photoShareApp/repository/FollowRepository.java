@@ -1,7 +1,6 @@
 package com.janek.photoShareApp.repository;
 
 import com.janek.photoShareApp.models.Follow;
-import com.janek.photoShareApp.payload.follow.FollowResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -21,7 +20,7 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
 
     Optional<Follow> findFollowByFollowerIdAndFollowingId(Long followerId, Long followingId);
 
-    int deleteFollowByFollowerIdAndFollowingId(Long followerId, Long followingId);
+    void deleteFollowByFollowerIdAndFollowingId(Long followerId, Long followingId);
 }
 
 //	Create table following_t (

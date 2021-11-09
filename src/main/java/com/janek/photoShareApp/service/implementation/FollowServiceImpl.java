@@ -2,7 +2,7 @@ package com.janek.photoShareApp.service.implementation;
 
 import com.janek.photoShareApp.models.Follow;
 import com.janek.photoShareApp.models.User;
-import com.janek.photoShareApp.payload.follow.FollowResponse;
+import com.janek.photoShareApp.payload.response.FollowResponse;
 import com.janek.photoShareApp.repository.FollowRepository;
 import com.janek.photoShareApp.repository.UserRepository;
 import com.janek.photoShareApp.service.FollowService;

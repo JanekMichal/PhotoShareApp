@@ -1,6 +1,6 @@
 package com.janek.photoShareApp.controllers;
 
-import com.janek.photoShareApp.payload.follow.FollowResponse;
+import com.janek.photoShareApp.payload.response.FollowResponse;
 import com.janek.photoShareApp.payload.request.FollowRequest;
 import com.janek.photoShareApp.repository.FollowRepository;
 import com.janek.photoShareApp.repository.UserRepository;

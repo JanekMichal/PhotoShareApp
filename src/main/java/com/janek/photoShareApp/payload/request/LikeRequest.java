@@ -5,14 +5,14 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 
-@Getter
 @Setter
-public class FollowRequest {
+@Getter
+public class LikeRequest {
     @NotBlank
-    private Long followerId;
+    private Long imageId;
 
     @NotBlank
-    private Long followedId;
+    private Long ownerId;
 
 
 }

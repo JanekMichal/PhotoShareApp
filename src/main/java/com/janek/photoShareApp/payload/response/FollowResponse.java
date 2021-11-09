@@ -1,4 +1,4 @@
-package com.janek.photoShareApp.payload.follow;
+package com.janek.photoShareApp.payload.response;
 
 public class FollowResponse {
     private boolean followed;
