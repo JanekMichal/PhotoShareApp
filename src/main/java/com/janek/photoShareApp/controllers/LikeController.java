@@ -18,7 +18,7 @@ public class LikeController {
     @Autowired
     LikeRepository likeRepository;
 
-//    @PreAuthorize("hasRole('USER')or hasRole('MODERATOR') or hasRole('ADMIN')")
+    //    @PreAuthorize("hasRole('USER')or hasRole('MODERATOR') or hasRole('ADMIN')")
     @PostMapping("/add_like")
     public ResponseEntity<?> addLike(@RequestBody LikeRequest likeRequest) {
         Like like = new Like(likeRequest.getOwnerId(), likeRequest.getImageId());
@@ -29,7 +29,7 @@ public class LikeController {
         return new ResponseEntity<>(like, HttpStatus.OK);
     }
 
-//    @PreAuthorize("hasRole('USER')or hasRole('MODERATOR') or hasRole('ADMIN')")
+    //    @PreAuthorize("hasRole('USER')or hasRole('MODERATOR') or hasRole('ADMIN')")
     @GetMapping("/likes_count/{image_id}")
     public ResponseEntity<?> getLikesCount(@PathVariable("image_id") Long imageId) {
         int likesCount = likeRepository.countAllByImageId(imageId);
@@ -37,5 +37,20 @@ public class LikeController {
         return new ResponseEntity<>(likesCount, HttpStatus.OK);
     }
 
-    
+    @GetMapping("/get_likes_page/{image_id}/{page_number}")
+    public ResponseEntity<?> getLikesPage(@PathVariable("image_id") Long imageId,
+                                          @PathVariable("page_number") Long pageNumber) {
+
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/is_liking_this_image/{image_id}/{user_id}")
+    public ResponseEntity<?> isLikingThisImage(@PathVariable("image_id") Long imageId,
+                                               @PathVariable("user_id") Long userId) {
+        Like like = new Like(userId, imageId);
+
+        return new ResponseEntity<>(likeRepository.exists(Example.of(like)), HttpStatus.OK);
+    }
+
 }

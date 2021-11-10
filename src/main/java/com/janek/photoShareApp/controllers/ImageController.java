@@ -8,6 +8,7 @@ import com.janek.photoShareApp.repository.CommentRepository;
 import com.janek.photoShareApp.repository.FollowRepository;
 import com.janek.photoShareApp.repository.ImageRepository;
 import com.janek.photoShareApp.repository.ProfileImageRepository;
+import com.janek.photoShareApp.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,9 +41,13 @@ public class ImageController {
     @Autowired
     ProfileImageRepository profileImageRepository;
 
-    @GetMapping("/get_feed_images/{userId}")
-    public ResponseEntity<?> getFeedImages(@PathVariable("userId") Long userId) {
-        List<Follow> listOfAllFollowedUsers = followRepository.findAllByFollowerId(userId);
+    @Autowired
+    AuthService authService;
+
+    @GetMapping("/get_feed_images")
+    public ResponseEntity<?> getFeedImages() {
+
+        List<Follow> listOfAllFollowedUsers = followRepository.findAllByFollowerId(authService.getCurrentUser().getId());
         List<Long> listOfIdAllFollowedUsers = new ArrayList<>();
         for (Follow follow : listOfAllFollowedUsers) {
             listOfIdAllFollowedUsers.add(follow.getFollowing().getId());
