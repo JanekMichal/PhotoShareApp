@@ -4,7 +4,7 @@ import com.janek.photoShareApp.payload.response.FollowResponse;
 import com.janek.photoShareApp.payload.request.FollowRequest;
 import com.janek.photoShareApp.repository.FollowRepository;
 import com.janek.photoShareApp.repository.UserRepository;
-import com.janek.photoShareApp.service.FollowService;
+import com.janek.photoShareApp.service.implementation.FollowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
