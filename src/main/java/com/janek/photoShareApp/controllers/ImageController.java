@@ -17,8 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.sound.midi.Soundbank;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,6 +46,8 @@ public class ImageController {
 
     @Autowired
     AuthService authService;
+
+    String[] acceptedImageTypes = new String[]{"image/jpeg", "image/jpg", "image/png"};
 
     @GetMapping("/get_feed_images")
     public ResponseEntity<?> getFeedImages() {
@@ -86,11 +90,19 @@ public class ImageController {
     public ResponseEntity<?> uploadImage(
             @RequestParam("imageFile") MultipartFile file) throws IOException {
 
-        Image img = new Image(file.getOriginalFilename(), file.getContentType(),
-                authService.getCurrentUser().getId(), compressBytes(file.getBytes()));
-        imageRepository.save(img);
+        int maxImageSize = 5242880;
+        if (Arrays.stream(acceptedImageTypes).noneMatch(
+                imageType -> imageType.equals(file.getContentType()))) {
+            return new ResponseEntity<>("Wrong file type! Only JPG, JPEG and PNG supported.", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+        } else if (file.getSize() > maxImageSize) {
+            return new ResponseEntity<>("Image Size is too big! Max size is 5MB.", HttpStatus.PAYLOAD_TOO_LARGE);
+        } else {
+            Image img = new Image(file.getOriginalFilename(), file.getContentType(),
+                    authService.getCurrentUser().getId(), compressBytes(file.getBytes()));
+            imageRepository.save(img);
+            return new ResponseEntity<>("Image added to profile!", HttpStatus.OK);
+        }
 
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(path = {"/get/{id}"})

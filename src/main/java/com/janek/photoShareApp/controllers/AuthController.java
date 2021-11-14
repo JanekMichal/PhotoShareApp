@@ -48,9 +48,7 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
 
-
         User userDetails = authService.getCurrentUser();
-
 
         return ResponseEntity.ok(new JwtResponse(jwt,
                 userDetails.getId(),
@@ -78,24 +76,7 @@ public class AuthController {
         User newUser = new User(signUpRequest.getUsername(),
                 signUpRequest.getEmail(),
                 encoder.encode(signUpRequest.getPassword()),
-                signUpRequest.getRole());
-
-
-        if (signUpRequest.getRole() == null) {
-            newUser.setRole(ERole.ROLE_USER);
-        } else {
-            switch (signUpRequest.getRole().toString()) {
-                case "admin":
-                    newUser.setRole(ERole.ROLE_ADMIN);
-                    break;
-                case "mod":
-                    newUser.setRole(ERole.ROLE_MODERATOR);
-                    break;
-                default:
-                    newUser.setRole(ERole.ROLE_USER);
-            }
-        }
-
+                ERole.ROLE_USER);
 
         userRepository.save(newUser);
 

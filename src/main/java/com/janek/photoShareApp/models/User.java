@@ -5,7 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -21,26 +21,24 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotBlank
-	@Size(max = 20)
+	@NotNull
+	@Size(min = 3, max = 20)
 	private String username;
 
-	@NotBlank
+	@NotNull
 	@Size(max = 50)
 	@Email
 	private String email;
 
-	@NotBlank
-	@Size(max = 120)
+	@NotNull
+	@Size(min = 6, max = 40)
 	private String password;
 
 	@Size(max = 20)
 	private String name = "None";
 
-
-	
 	@Enumerated(EnumType.STRING)
-	private ERole role = ERole.ROLE_USER;
+	private ERole role;
 
 	public User() {
 	}

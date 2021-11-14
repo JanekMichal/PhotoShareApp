@@ -198,6 +198,7 @@ public class UserController {
 
     @Transactional
     @PatchMapping("give_moderator_role/{id}")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> giveModeratorRole(@PathVariable("id") Long userId) {
 
         User user = userRepository.findUserById(userId);
@@ -209,6 +210,7 @@ public class UserController {
 
     @Transactional
     @PatchMapping("give_admin_role/{id}")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> giveAdminRole(@PathVariable("id") Long userId) {
 
         User user = userRepository.findUserById(userId);
@@ -220,6 +222,7 @@ public class UserController {
 
     @Transactional
     @PatchMapping("give_user_role/{id}")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> giveUserRole(@PathVariable("id") Long userId) {
 
         User user = userRepository.findUserById(userId);
