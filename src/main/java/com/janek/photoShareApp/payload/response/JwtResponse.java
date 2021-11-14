@@ -1,9 +1,5 @@
 package com.janek.photoShareApp.payload.response;
 
-import com.janek.photoShareApp.models.ERole;
-
-import java.util.List;
-
 public class JwtResponse {
     private String token;
     private String type = "Bearer";

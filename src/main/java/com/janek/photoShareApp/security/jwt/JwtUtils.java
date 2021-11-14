@@ -1,9 +1,7 @@
 package com.janek.photoShareApp.security.jwt;
 
-import java.util.Date;
-
-import com.janek.photoShareApp.security.services.UserDetailsImpl;
 import com.janek.photoShareApp.service.AuthService;
+import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import io.jsonwebtoken.*;
+import java.util.Date;
 
 @Component
 public class JwtUtils {

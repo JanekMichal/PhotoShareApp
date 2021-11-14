@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,14 +47,6 @@ public class LikeController {
         int likesCount = likeRepository.countAllByImageId(imageId);
 
         return new ResponseEntity<>(likesCount, HttpStatus.OK);
-    }
-
-    @GetMapping("/get_likes_page/{image_id}/{page_number}")
-    public ResponseEntity<?> getLikesPage(@PathVariable("image_id") Long imageId,
-                                          @PathVariable("page_number") Long pageNumber) {
-
-
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/is_liking_this_image/{image_id}")
