@@ -3,6 +3,7 @@ package com.janek.photoShareApp.controllers;
 import com.janek.photoShareApp.models.Follow;
 import com.janek.photoShareApp.models.Image;
 import com.janek.photoShareApp.models.ProfileImage;
+import com.janek.photoShareApp.models.User;
 import com.janek.photoShareApp.payload.response.MessageResponse;
 import com.janek.photoShareApp.repository.CommentRepository;
 import com.janek.photoShareApp.repository.FollowRepository;
@@ -81,13 +82,12 @@ public class ImageController {
         }
     }
 
-    @PostMapping("/upload_image/{user_id}")
+    @PostMapping("/upload_image")
     public ResponseEntity<?> uploadImage(
-            @RequestParam("imageFile") MultipartFile file,
-            @PathVariable("user_id") Long userId) throws IOException {
+            @RequestParam("imageFile") MultipartFile file) throws IOException {
 
         Image img = new Image(file.getOriginalFilename(), file.getContentType(),
-                userId, compressBytes(file.getBytes()));
+                authService.getCurrentUser().getId(), compressBytes(file.getBytes()));
         imageRepository.save(img);
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -116,16 +116,15 @@ public class ImageController {
     }
 
     @Transactional
-    @PostMapping("/upload_profile_image/{user_id}")
+    @PostMapping("/upload_profile_image")
     public ResponseEntity<?> uploadProfileImage(
-            @RequestParam("imageFile") MultipartFile file,
-            @PathVariable("user_id") Long userId) throws IOException {
-
-        if (profileImageRepository.existsByOwnerId(userId)) {
-            profileImageRepository.deleteByOwnerId(userId);
+            @RequestParam("imageFile") MultipartFile file) throws IOException {
+        User user = authService.getCurrentUser();
+        if (profileImageRepository.existsByOwnerId(user.getId())) {
+            profileImageRepository.deleteByOwnerId(user.getId());
         }
         ProfileImage img = new ProfileImage(file.getOriginalFilename(), file.getContentType(),
-                userId, compressBytes(file.getBytes()));
+                user.getId(), compressBytes(file.getBytes()));
         profileImageRepository.save(img);
 
 

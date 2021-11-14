@@ -1,16 +1,13 @@
 package com.janek.photoShareApp.controllers;
 
 import com.janek.photoShareApp.models.ERole;
-import com.janek.photoShareApp.models.Role;
 import com.janek.photoShareApp.models.User;
 import com.janek.photoShareApp.models.UserPage;
 import com.janek.photoShareApp.payload.request.UserDataUpdateRequest;
 import com.janek.photoShareApp.payload.request.UserPasswordUpdateRequest;
 import com.janek.photoShareApp.payload.response.MessageResponse;
 import com.janek.photoShareApp.repository.ImageRepository;
-import com.janek.photoShareApp.repository.RoleRepository;
 import com.janek.photoShareApp.repository.UserRepository;
-import com.janek.photoShareApp.security.jwt.JwtUtils;
 import com.janek.photoShareApp.security.services.UserDetailsServiceImpl;
 import com.janek.photoShareApp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -41,9 +35,6 @@ public class UserController {
 
     @Autowired
     PasswordEncoder encoder;
-
-    @Autowired
-    RoleRepository roleRepository;
 
     private final UserService userService;
 
@@ -210,12 +201,7 @@ public class UserController {
     public ResponseEntity<?> giveModeratorRole(@PathVariable("id") Long userId) {
 
         User user = userRepository.findUserById(userId);
-        Set<Role> roles = new HashSet<>();
-        Role moderatorRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
-                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-
-        roles.add(moderatorRole);
-        user.setRoles(roles);
+        user.setRole(ERole.ROLE_MODERATOR);
         userRepository.save(user);
 
         return new ResponseEntity<>(user, HttpStatus.OK);
@@ -226,12 +212,7 @@ public class UserController {
     public ResponseEntity<?> giveAdminRole(@PathVariable("id") Long userId) {
 
         User user = userRepository.findUserById(userId);
-        Set<Role> roles = new HashSet<>();
-        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-
-        roles.add(adminRole);
-        user.setRoles(roles);
+        user.setRole(ERole.ROLE_ADMIN);
         userRepository.save(user);
 
         return new ResponseEntity<>(user, HttpStatus.OK);
@@ -242,15 +223,8 @@ public class UserController {
     public ResponseEntity<?> giveUserRole(@PathVariable("id") Long userId) {
 
         User user = userRepository.findUserById(userId);
-        Set<Role> roles = new HashSet<>();
-        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-
-        roles.add(userRole);
-        user.setRoles(roles);
+        user.setRole(ERole.ROLE_USER);
         userRepository.save(user);
-
-
 
         return new ResponseEntity<>(user, HttpStatus.OK);
     }

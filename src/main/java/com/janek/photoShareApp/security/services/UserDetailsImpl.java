@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.janek.photoShareApp.models.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import static java.util.Collections.singletonList;
+
 public class UserDetailsImpl implements UserDetails {
     private static final long serialVersionUID = 1L;
 
@@ -39,9 +41,7 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     public static UserDetailsImpl build(User user) {
-        List<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName().name()))
-                .collect(Collectors.toList());
+        List<GrantedAuthority> authorities = singletonList(new SimpleGrantedAuthority(user.getRole().toString()));
 
         return new UserDetailsImpl(
                 user.getId(),

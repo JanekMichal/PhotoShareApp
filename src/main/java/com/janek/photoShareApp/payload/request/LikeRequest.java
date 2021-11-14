@@ -10,9 +10,4 @@ import javax.validation.constraints.NotBlank;
 public class LikeRequest {
     @NotBlank
     private Long imageId;
-
-    @NotBlank
-    private Long ownerId;
-
-
 }

@@ -3,8 +3,10 @@ package com.janek.photoShareApp.security.jwt;
 import java.util.Date;
 
 import com.janek.photoShareApp.security.services.UserDetailsImpl;
+import com.janek.photoShareApp.service.AuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -21,12 +23,16 @@ public class JwtUtils {
 	@Value("${photoShareApp.app.jwtExpirationMs}")
 	private int jwtExpirationMs;
 
+	@Autowired
+	AuthService authService;
+
 	public String generateJwtToken(Authentication authentication) {
 
-		UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
+		//UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
+
 
 		return Jwts.builder()
-				.setSubject((userPrincipal.getUsername()))
+				.setSubject(authService.getCurrentUser().getUsername())
 				.setIssuedAt(new Date())
 				.setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
 				.signWith(SignatureAlgorithm.HS512, jwtSecret)

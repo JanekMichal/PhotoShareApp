@@ -1,5 +1,7 @@
 package com.janek.photoShareApp.payload.request;
 
+import com.janek.photoShareApp.models.ERole;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -15,7 +17,7 @@ public class SignupRequest {
     @Email
     private String email;
 
-    private Set<String> role;
+    private ERole role;
 
     @NotBlank
     @Size(min = 6, max = 40)
@@ -45,11 +47,11 @@ public class SignupRequest {
         this.password = password;
     }
 
-    public Set<String> getRole() {
-        return this.role;
+    public ERole getRole() {
+        return role;
     }
 
-    public void setRole(Set<String> role) {
+    public void setRole(ERole role) {
         this.role = role;
     }
 }

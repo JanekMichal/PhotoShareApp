@@ -10,4 +10,6 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
     int countAllByImageId(Long id);
 
     Page<Like> getLikesByImageId(Long imageId, Pageable pageable);
+
+    void deleteByImageIdAndOwnerId(Long imageId, Long ownerId);
 }

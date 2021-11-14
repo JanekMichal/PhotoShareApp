@@ -1,5 +1,7 @@
 package com.janek.photoShareApp.payload.response;
 
+import com.janek.photoShareApp.models.ERole;
+
 import java.util.List;
 
 public class JwtResponse {
@@ -8,15 +10,15 @@ public class JwtResponse {
     private Long id;
     private String username;
     private String email;
-    private List<String> roles;
+    private String role;
     private String name;
 
-    public JwtResponse(String accessToken, Long id, String username, String email, String name, List<String> roles) {
+    public JwtResponse(String accessToken, Long id, String username, String email, String name, String role) {
         this.token = accessToken;
         this.id = id;
         this.username = username;
         this.email = email;
-        this.roles = roles;
+        this.role = role;
         this.name = name;
     }
 
@@ -60,7 +62,11 @@ public class JwtResponse {
         this.username = username;
     }
 
-    public List<String> getRoles() {
-        return roles;
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

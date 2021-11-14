@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.singletonList;
+
 @Service
 @AllArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -32,13 +34,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     private List<SimpleGrantedAuthority> getAuthorities(User user) {
-        return user
-                .getRoles()
-                .stream()
-                .map(role -> new SimpleGrantedAuthority(role
-                        .getName()
-                        .name()))
-                .collect(Collectors.toList());
+        return singletonList(new SimpleGrantedAuthority(user.getRole().toString()));
+
+//                user
+//                .getRole()
+//                new SimpleGrantedAuthority(role
+//                        .getName()
+//                        .name()))
+//                .collect(Collectors.toList());
     }
 
     public User updateUser(User user) {

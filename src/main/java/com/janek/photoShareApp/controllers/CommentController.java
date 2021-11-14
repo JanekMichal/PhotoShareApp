@@ -3,6 +3,7 @@ package com.janek.photoShareApp.controllers;
 import com.janek.photoShareApp.models.Comment;
 import com.janek.photoShareApp.models.CommentPage;
 import com.janek.photoShareApp.repository.CommentRepository;
+import com.janek.photoShareApp.service.AuthService;
 import com.janek.photoShareApp.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,9 @@ import java.util.List;
 public class CommentController {
 
     @Autowired
+    AuthService authService;
+
+    @Autowired
     CommentRepository commentRepository;
 
     private final CommentService commentService;
@@ -25,13 +29,12 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    @PostMapping("/add_comment/{photoId}/{creatorId}")
+    @PostMapping("/add_comment/{photoId}")
     public ResponseEntity<?> addComment(
             @PathVariable("photoId") Long photoId,
-            @PathVariable("creatorId") Long createdBy,
             @RequestBody String description) {
 
-        Comment comment = new Comment(description, createdBy, photoId);
+        Comment comment = new Comment(description, authService.getCurrentUser().getId(), photoId);
 
         commentRepository.save(comment);
 
