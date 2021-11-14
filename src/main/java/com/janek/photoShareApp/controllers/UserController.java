@@ -36,11 +36,8 @@ public class UserController {
     @Autowired
     PasswordEncoder encoder;
 
-    private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+    @Autowired
+    UserService userService;
 
     @GetMapping("page_users/{page}")
     //@PreAuthorize("hasRole('ADMIN')")

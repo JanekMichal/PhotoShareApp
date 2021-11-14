@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -24,11 +23,7 @@ public class JwtUtils {
 	@Autowired
 	AuthService authService;
 
-	public String generateJwtToken(Authentication authentication) {
-
-		//UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-
-
+	public String generateJwtToken() {
 		return Jwts.builder()
 				.setSubject(authService.getCurrentUser().getUsername())
 				.setIssuedAt(new Date())

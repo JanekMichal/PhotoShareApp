@@ -1,12 +1,8 @@
 package com.janek.photoShareApp.controllers;
 
-import com.janek.photoShareApp.models.Like;
 import com.janek.photoShareApp.payload.request.LikeRequest;
-import com.janek.photoShareApp.repository.LikeRepository;
-import com.janek.photoShareApp.service.AuthService;
+import com.janek.photoShareApp.service.LikeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -17,43 +13,30 @@ import org.springframework.web.bind.annotation.*;
 public class LikeController {
 
     @Autowired
-    LikeRepository likeRepository;
-
-    @Autowired
-    AuthService authService;
+    LikeService likeService;
 
     //    @PreAuthorize("hasRole('USER')or hasRole('MODERATOR') or hasRole('ADMIN')")
     @PostMapping("/add_like")
+    //    @PreAuthorize("hasRole('USER')or hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<?> addLike(@RequestBody LikeRequest likeRequest) {
-        Like like = new Like(authService.getCurrentUser().getId(), likeRequest.getImageId());
-        if (!likeRepository.exists(Example.of(like))) {
-            likeRepository.save(like);
-        }
-
-        return new ResponseEntity<>(like, HttpStatus.OK);
+        return likeService.addLike(likeRequest);
     }
 
     @Transactional
     @DeleteMapping("/delete_like")
     public ResponseEntity<?> deleteLike(@RequestBody LikeRequest likeRequest) {
-        likeRepository.deleteByImageIdAndOwnerId(likeRequest.getImageId(), authService.getCurrentUser().getId());
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        return likeService.deleteLike(likeRequest);
     }
 
     //    @PreAuthorize("hasRole('USER')or hasRole('MODERATOR') or hasRole('ADMIN')")
     @GetMapping("/likes_count/{image_id}")
     public ResponseEntity<?> getLikesCount(@PathVariable("image_id") Long imageId) {
-        int likesCount = likeRepository.countAllByImageId(imageId);
-
-        return new ResponseEntity<>(likesCount, HttpStatus.OK);
+        return likeService.getLikesCount(imageId);
     }
 
     @GetMapping("/is_liking_this_image/{image_id}")
+    //    @PreAuthorize("hasRole('USER')or hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<?> isLikingThisImage(@PathVariable("image_id") Long imageId) {
-        Like like = new Like(authService.getCurrentUser().getId(), imageId);
-
-        return new ResponseEntity<>(likeRepository.exists(Example.of(like)), HttpStatus.OK);
+        return likeService.isLikingThisImage(imageId);
     }
-
 }

@@ -1,155 +1,67 @@
 package com.janek.photoShareApp.controllers;
 
-import com.janek.photoShareApp.models.Follow;
 import com.janek.photoShareApp.models.Image;
 import com.janek.photoShareApp.models.ProfileImage;
-import com.janek.photoShareApp.models.User;
-import com.janek.photoShareApp.payload.response.MessageResponse;
-import com.janek.photoShareApp.repository.CommentRepository;
-import com.janek.photoShareApp.repository.FollowRepository;
-import com.janek.photoShareApp.repository.ImageRepository;
-import com.janek.photoShareApp.repository.ProfileImageRepository;
-import com.janek.photoShareApp.service.AuthService;
+import com.janek.photoShareApp.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.sound.midi.Soundbank;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-
-import static com.janek.photoShareApp.service.ImageCompression.compressBytes;
-import static com.janek.photoShareApp.service.ImageCompression.decompressBytes;
 
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping(path = "image")
 public class ImageController {
-    @Autowired
-    ImageRepository imageRepository;
 
     @Autowired
-    FollowRepository followRepository;
-
-    @Autowired
-    CommentRepository commentRepository;
-
-    @Autowired
-    ProfileImageRepository profileImageRepository;
-
-    @Autowired
-    AuthService authService;
-
-    String[] acceptedImageTypes = new String[]{"image/jpeg", "image/jpg", "image/png"};
+    ImageService imageService;
 
     @GetMapping("/get_feed_images")
     public ResponseEntity<?> getFeedImages() {
-
-        List<Follow> listOfAllFollowedUsers = followRepository.findAllByFollowerId(authService.getCurrentUser().getId());
-        List<Long> listOfIdAllFollowedUsers = new ArrayList<>();
-        for (Follow follow : listOfAllFollowedUsers) {
-            listOfIdAllFollowedUsers.add(follow.getFollowing().getId());
-
-        }
-
-        final List<Image> retrievedImages = imageRepository.findTop10ByOwnerIdInOrderByIdDesc(listOfIdAllFollowedUsers);
-
-        if (retrievedImages != null) {
-            for (Image image : retrievedImages) {
-                image.setPicByte(decompressBytes(image.getPicByte()));
-            }
-            return new ResponseEntity<>(retrievedImages, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(2, HttpStatus.NOT_FOUND);
-        }
+        return imageService.getFeedImages();
     }
 
     @PatchMapping("/change_description/{image_id}")
-    public ResponseEntity<?> changeDescription(@RequestBody String description2,
-                                               @PathVariable("image_id") Long imageId) {
-        Optional<Image> imageModel = imageRepository.findById(imageId);
-        if (imageModel.isPresent()) {
-            imageModel.get().setDescription(description2);
-            imageRepository.save(imageModel.get());
-            return new ResponseEntity<>(imageModel, HttpStatus.OK);
-        } else {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("We couldn't find this image in our database :("));
-        }
+    public ResponseEntity<?> changeImageDescription(@RequestBody String description,
+                                                    @PathVariable("image_id") Long imageId) {
+        return imageService.changeImageDescription(description, imageId);
     }
 
     @PostMapping("/upload_image")
     public ResponseEntity<?> uploadImage(
             @RequestParam("imageFile") MultipartFile file) throws IOException {
-
-        int maxImageSize = 5242880;
-        if (Arrays.stream(acceptedImageTypes).noneMatch(
-                imageType -> imageType.equals(file.getContentType()))) {
-            return new ResponseEntity<>("Wrong file type! Only JPG, JPEG and PNG supported.", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
-        } else if (file.getSize() > maxImageSize) {
-            return new ResponseEntity<>("Image Size is too big! Max size is 5MB.", HttpStatus.PAYLOAD_TOO_LARGE);
-        } else {
-            Image img = new Image(file.getOriginalFilename(), file.getContentType(),
-                    authService.getCurrentUser().getId(), compressBytes(file.getBytes()));
-            imageRepository.save(img);
-            return new ResponseEntity<>("Image added to profile!", HttpStatus.OK);
-        }
-
+        return imageService.uploadImage(file);
     }
 
     @GetMapping(path = {"/get/{id}"})
-    public Image getImageById(@PathVariable("id") Long id) {
-        final Optional<Image> retrievedImage = imageRepository.findById(id);
-        return new Image(retrievedImage.get().getName(), retrievedImage.get().getType(),
-                retrievedImage.get().getOwnerId(), retrievedImage.get().getDescription(), decompressBytes(retrievedImage.get().getPicByte()));
+    public Image getImageById(@PathVariable("id") Long imageId) {
+        return imageService.getImageById(imageId);
     }
 
     @DeleteMapping(path = "/delete/{id}")
-    public ResponseEntity<?> deleteImageById(@PathVariable("id") Long id) {
-        imageRepository.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<?> deleteImageById(@PathVariable("id") Long imageId) {
+        return imageService.deleteImageById(imageId);
     }
 
     @GetMapping(path = {"/get/all_images/{id}"})
-    public ResponseEntity<List<Image>> getAllImages(@PathVariable("id") Long id) {
-        final List<Image> retrievedImages = imageRepository.findAllByOwnerIdOrderByIdDesc(id);
-        for (Image image : retrievedImages) {
-            image.setPicByte(decompressBytes(image.getPicByte()));
-        }
-        return new ResponseEntity<>(retrievedImages, HttpStatus.OK);
+    public ResponseEntity<List<Image>> getAllImages(@PathVariable("id") Long userId) {
+        return imageService.getAllImages(userId);
     }
 
     @Transactional
     @PostMapping("/upload_profile_image")
     public ResponseEntity<?> uploadProfileImage(
             @RequestParam("imageFile") MultipartFile file) throws IOException {
-        User user = authService.getCurrentUser();
-        if (profileImageRepository.existsByOwnerId(user.getId())) {
-            profileImageRepository.deleteByOwnerId(user.getId());
-        }
-        ProfileImage img = new ProfileImage(file.getOriginalFilename(), file.getContentType(),
-                user.getId(), compressBytes(file.getBytes()));
-        profileImageRepository.save(img);
-
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        return imageService.uploadProfileImage(file);
     }
 
     @GetMapping("/get_profile_image/{user_id}")
     public ProfileImage getProfileImageById(@PathVariable("user_id") Long userId) {
-        final Optional<ProfileImage> retrievedProfileImage = profileImageRepository.getByOwnerId(userId);
-
-        return retrievedProfileImage.map(
-                        profileImage -> new ProfileImage(profileImage.getName(), profileImage.getType(),
-                                profileImage.getOwnerId(), decompressBytes(profileImage.getPicByte()))).
-                orElseThrow(() -> new RuntimeException("Image not found"));
+        return imageService.getProfileImageById(userId);
     }
 }
