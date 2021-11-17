@@ -3,7 +3,7 @@ package com.janek.photoShareApp.controllers;
 import com.janek.photoShareApp.models.Image;
 import com.janek.photoShareApp.models.ProfileImage;
 import com.janek.photoShareApp.service.ImageService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +16,9 @@ import java.util.List;
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping(path = "image")
+@AllArgsConstructor
 public class ImageController {
 
-    @Autowired
     ImageService imageService;
 
     @GetMapping("/get_feed_images")
@@ -43,9 +43,14 @@ public class ImageController {
         return imageService.getImageById(imageId);
     }
 
-    @DeleteMapping(path = "/delete/{id}")
-    public ResponseEntity<?> deleteImageById(@PathVariable("id") Long imageId) {
-        return imageService.deleteImageById(imageId);
+    @DeleteMapping(path = "/delete_someone_image/{id}")
+    public ResponseEntity<?> deleteSomeoneImage(@PathVariable("id") Long imageId) {
+        return imageService.deleteSomeoneImage(imageId);
+    }
+
+    @DeleteMapping(path = "/delete_own_image/{id}")
+    public ResponseEntity<?> deleteOwnImage(@PathVariable("id") Long imageId) {
+        return imageService.deleteOwnImage(imageId);
     }
 
     @GetMapping(path = {"/get/all_images/{id}"})

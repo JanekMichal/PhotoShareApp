@@ -21,13 +21,8 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
     Optional<Follow> findFollowByFollowerIdAndFollowingId(Long followerId, Long followingId);
 
     void deleteFollowByFollowerIdAndFollowingId(Long followerId, Long followingId);
-}
 
-//	Create table following_t (
-//		user_id bigint not null,
-//		followed_user_id bigint,
-//	--username varchar(20),
-//	Primary key (user_id, followed_user_id),
-//	FOREIGN KEY (user_id) REFERENCES users(id) ON UPDATE CASCADE
-//		,FOREIGN KEY (followed_user_id) REFERENCES users(id) ON UPDATE CASCADE
-//		)
+    void deleteAllByFollowerId(Long followerId);
+
+    void deleteAllByFollowingId(Long followingId);
+}

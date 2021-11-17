@@ -8,7 +8,7 @@ import com.janek.photoShareApp.payload.response.MessageResponse;
 import com.janek.photoShareApp.repository.FollowRepository;
 import com.janek.photoShareApp.repository.ImageRepository;
 import com.janek.photoShareApp.repository.ProfileImageRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -24,16 +24,13 @@ import static com.janek.photoShareApp.service.ImageCompression.compressBytes;
 import static com.janek.photoShareApp.service.ImageCompression.decompressBytes;
 
 @Service
+@AllArgsConstructor
 public class ImageService {
-    @Autowired
-    ImageRepository imageRepository;
-    @Autowired
-    FollowRepository followRepository;
-    @Autowired
-    ProfileImageRepository profileImageRepository;
-    @Autowired
-    AuthService authService;
 
+    ImageRepository imageRepository;
+    FollowRepository followRepository;
+    ProfileImageRepository profileImageRepository;
+    AuthService authService;
     String[] acceptedImageTypes = new String[]{"image/jpeg", "image/jpg", "image/png"};
 
     public ResponseEntity<?> getFeedImages() {
@@ -80,6 +77,7 @@ public class ImageService {
             Image img = new Image(file.getOriginalFilename(), file.getContentType(),
                     authService.getCurrentUser().getId(), compressBytes(file.getBytes()));
             imageRepository.save(img);
+            //TODO: fron jest nieprzyzwyczajony do tego, że dostaje jakąś odpowedź
             return new ResponseEntity<>("Image added to profile!", HttpStatus.OK);
         }
     }
@@ -90,8 +88,22 @@ public class ImageService {
                 retrievedImage.get().getOwnerId(), retrievedImage.get().getDescription(), decompressBytes(retrievedImage.get().getPicByte()));
     }
 
-    public ResponseEntity<?> deleteImageById(Long imageId) {
-        imageRepository.deleteById(imageId);
+    public ResponseEntity<?> deleteSomeoneImage(Long imageId) {
+        if (imageRepository.existsById(imageId)) {
+            imageRepository.deleteById(imageId);
+        } else {
+            throw new RuntimeException("Image not found!");
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    public ResponseEntity<?> deleteOwnImage(Long imageId) {
+        Image image = imageRepository.findById(imageId).orElseThrow(() -> new RuntimeException("Image not found!"));
+        if (image.getOwnerId() != authService.getCurrentUser().getId()) {
+            throw new RuntimeException("You are not owner of this image!");
+        } else {
+            imageRepository.deleteById(imageId);
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -123,4 +135,6 @@ public class ImageService {
                                 profileImage.getOwnerId(), decompressBytes(profileImage.getPicByte()))).
                 orElseThrow(() -> new RuntimeException("Image not found"));
     }
+
+
 }

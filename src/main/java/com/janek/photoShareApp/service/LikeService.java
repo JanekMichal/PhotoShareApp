@@ -1,35 +1,20 @@
 package com.janek.photoShareApp.service;
 
 import com.janek.photoShareApp.models.Like;
-import com.janek.photoShareApp.models.LikePage;
 import com.janek.photoShareApp.payload.request.LikeRequest;
 import com.janek.photoShareApp.repository.LikeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
+import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class LikeService {
 
-    @Autowired
     private LikeRepository likeRepository;
-
-    @Autowired
     private AuthService authService;
-
-    public LikeService(LikeRepository likeRepository) {
-        this.likeRepository = likeRepository;
-    }
-
-    public Page<Like> getLikesPage(LikePage likePage, Long imageId) {
-        Sort sort = Sort.by(likePage.getSortDirection(), likePage.getSortBy());
-        Pageable pageable = PageRequest.of(likePage.getPageNumber(),
-                likePage.getPageSize(), sort);
-
-        return likeRepository.getLikesByImageId(imageId, pageable);
-    }
 
     public ResponseEntity<?> addLike(LikeRequest likeRequest) {
         Like like = new Like(authService.getCurrentUser().getId(), likeRequest.getImageId());
@@ -39,7 +24,7 @@ public class LikeService {
         return new ResponseEntity<>(like, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> deleteLike( LikeRequest likeRequest) {
+    public ResponseEntity<?> deleteLike(LikeRequest likeRequest) {
         likeRepository.deleteByImageIdAndOwnerId(likeRequest.getImageId(), authService.getCurrentUser().getId());
 
         return new ResponseEntity<>(HttpStatus.OK);

@@ -1,9 +1,8 @@
 package com.janek.photoShareApp.security;
 
-import com.janek.photoShareApp.security.jwt.AuthEntryPointJwt;
 import com.janek.photoShareApp.security.jwt.AuthTokenFilter;
 import com.janek.photoShareApp.security.services.UserDetailsServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,7 +11,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -23,12 +21,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
         // securedEnabled = true,
         // jsr250Enabled = true,
         prePostEnabled = true)
+@AllArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    @Autowired
-    UserDetailsServiceImpl userDetailsService;
 
-    @Autowired
-    private AuthEntryPointJwt unauthorizedHandler;
+    UserDetailsServiceImpl userDetailsService;
 
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
@@ -53,17 +49,36 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().disable().csrf().disable()
-                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+        http.cors()
+                .and()
+                .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/auth/**").permitAll()
-                .antMatchers("/api/test/**").permitAll()
-                .antMatchers("/file/**").permitAll()
-                .antMatchers("/image/**").permitAll()
-                .antMatchers("/api/**").permitAll()
-                .antMatchers("/comment/**").permitAll()
-                .antMatchers("/like/**").permitAll()
+                .antMatchers("/auth/**").permitAll()
+                .antMatchers("/comment/**").hasAnyAuthority("ROLE_USER", "ROLE_MODERATOR", "ROLE_ADMIN")
+                .antMatchers("/follow/**").hasAnyAuthority("ROLE_USER", "ROLE_MODERATOR", "ROLE_ADMIN")
+                .antMatchers("/image/get_feed_images/**",
+                        "/image/change_description/**",
+                        "/image/upload_image/**",
+                        "/image/get/**",
+                        "/image/get/all_images/**",
+                        "/image/upload_profile_image/**",
+                        "/image/get_profile_image/**"
+                        , "/image/delete_own_image/**").hasAnyAuthority("ROLE_USER", "ROLE_MODERATOR", "ROLE_ADMIN")
+                .antMatchers("/image/delete_someone_image/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_MODERATOR")
+                .antMatchers("/like/**").hasAnyAuthority("ROLE_USER", "ROLE_MODERATOR", "ROLE_ADMIN")
+                .antMatchers("/user/page_users/**",
+                        "/user/search/**",
+                        "/user/profile/**",
+                        "/user/update_user_data/**",
+                        "/user/change_user_password/**",
+                        "/user/change_user_password/**",
+                        "/user/**",
+                        "/user/**").hasAnyAuthority("ROLE_USER", "ROLE_MODERATOR", "ROLE_ADMIN")
+                .antMatchers("/user/delete_own_account/**").hasAnyAuthority("ROLE_USER", "ROLE_MODERATOR")
+                .antMatchers("/user/delete_someone_else_account/**").hasAnyAuthority("ROLE_MODERATOR", "ROLE_ADMIN")
+                .antMatchers("/user/give_moderator_role/**",
+                        "/user/give_admin_role/**",
+                        "/user/give_user_role/**").hasAnyAuthority("ROLE_ADMIN")
                 .anyRequest().authenticated();
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
