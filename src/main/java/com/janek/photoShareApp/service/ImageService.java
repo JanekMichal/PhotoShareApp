@@ -31,7 +31,7 @@ public class ImageService {
     FollowRepository followRepository;
     ProfileImageRepository profileImageRepository;
     AuthService authService;
-    String[] acceptedImageTypes = new String[]{"image/jpeg", "image/jpg", "image/png"};
+
 
     public ResponseEntity<?> getFeedImages() {
         List<Follow> listOfAllFollowedUsers = followRepository.findAllByFollowerId(authService.getCurrentUser().getId());
@@ -68,6 +68,7 @@ public class ImageService {
 
     public ResponseEntity<?> uploadImage(MultipartFile file) throws IOException {
         int maxImageSize = 5242880;
+        String[] acceptedImageTypes = new String[]{"image/jpeg", "image/jpg", "image/png"};
         if (Arrays.stream(acceptedImageTypes).noneMatch(
                 imageType -> imageType.equals(file.getContentType()))) {
             return new ResponseEntity<>("Wrong file type! Only JPG, JPEG and PNG supported.", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
@@ -77,8 +78,9 @@ public class ImageService {
             Image img = new Image(file.getOriginalFilename(), file.getContentType(),
                     authService.getCurrentUser().getId(), compressBytes(file.getBytes()));
             imageRepository.save(img);
+            img.setPicByte(decompressBytes(img.getPicByte()));
             //TODO: fron jest nieprzyzwyczajony do tego, że dostaje jakąś odpowedź
-            return new ResponseEntity<>("Image added to profile!", HttpStatus.OK);
+            return new ResponseEntity<>(img, HttpStatus.OK);
         }
     }
 
@@ -135,6 +137,4 @@ public class ImageService {
                                 profileImage.getOwnerId(), decompressBytes(profileImage.getPicByte()))).
                 orElseThrow(() -> new RuntimeException("Image not found"));
     }
-
-
 }

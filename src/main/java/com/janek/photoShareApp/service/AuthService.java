@@ -1,6 +1,6 @@
 package com.janek.photoShareApp.service;
 
-import com.janek.photoShareApp.models.ERole;
+import com.janek.photoShareApp.models.Role;
 import com.janek.photoShareApp.models.User;
 import com.janek.photoShareApp.payload.request.LoginRequest;
 import com.janek.photoShareApp.payload.request.SignupRequest;
@@ -37,7 +37,7 @@ public class AuthService {
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + principal.getUsername()));
     }
 
-    public ResponseEntity<?> authenticateUser( LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -56,7 +56,7 @@ public class AuthService {
         ));
     }
 
-    public ResponseEntity<?> registerUser( SignupRequest signUpRequest) {
+    public ResponseEntity<?> registerUser(SignupRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
@@ -72,7 +72,7 @@ public class AuthService {
         User newUser = new User(signUpRequest.getUsername(),
                 signUpRequest.getEmail(),
                 encoder.encode(signUpRequest.getPassword()),
-                ERole.ROLE_USER);
+                Role.USER);
 
         userRepository.save(newUser);
 

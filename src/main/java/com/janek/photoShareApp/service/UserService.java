@@ -1,6 +1,6 @@
 package com.janek.photoShareApp.service;
 
-import com.janek.photoShareApp.models.ERole;
+import com.janek.photoShareApp.models.Role;
 import com.janek.photoShareApp.models.User;
 import com.janek.photoShareApp.models.UserPage;
 import com.janek.photoShareApp.payload.request.UserDataUpdateRequest;
@@ -125,7 +125,7 @@ public class UserService {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> giveRole(Long userId, ERole role) {
+    public ResponseEntity<User> giveRole(Long userId, Role role) {
         User user = userRepository.findUserById(userId);
         user.setRole(role);
         userRepository.save(user);

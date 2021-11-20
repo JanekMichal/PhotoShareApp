@@ -31,19 +31,19 @@ public class User {
 	private String email;
 
 	@NotNull
-	@Size(min = 6, max = 40)
+	@Size(min = 6)
 	private String password;
 
 	@Size(max = 20)
 	private String name = "None";
 
 	@Enumerated(EnumType.STRING)
-	private ERole role;
+	private Role role;
 
 	public User() {
 	}
 
-	public User(String username, String email, String password, ERole role) {
+	public User(String username, String email, String password, Role role) {
 		this.username = username;
 		this.email = email;
 		this.password = password;

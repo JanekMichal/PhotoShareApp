@@ -54,8 +54,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/auth/**").permitAll()
-                .antMatchers("/comment/**").hasAnyAuthority("ROLE_USER", "ROLE_MODERATOR", "ROLE_ADMIN")
-                .antMatchers("/follow/**").hasAnyAuthority("ROLE_USER", "ROLE_MODERATOR", "ROLE_ADMIN")
+                .antMatchers("/comment/**").hasAnyAuthority("USER", "MODERATOR", "ADMIN")
+                .antMatchers("/follow/**").hasAnyAuthority("USER", "MODERATOR", "ADMIN")
                 .antMatchers("/image/get_feed_images/**",
                         "/image/change_description/**",
                         "/image/upload_image/**",
@@ -63,9 +63,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/image/get/all_images/**",
                         "/image/upload_profile_image/**",
                         "/image/get_profile_image/**"
-                        , "/image/delete_own_image/**").hasAnyAuthority("ROLE_USER", "ROLE_MODERATOR", "ROLE_ADMIN")
-                .antMatchers("/image/delete_someone_image/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_MODERATOR")
-                .antMatchers("/like/**").hasAnyAuthority("ROLE_USER", "ROLE_MODERATOR", "ROLE_ADMIN")
+                        , "/image/delete_own_image/**").hasAnyAuthority("USER", "MODERATOR", "ADMIN")
+                .antMatchers("/image/delete_someone_image/**").hasAnyAuthority("ADMIN", "MODERATOR")
+                .antMatchers("/like/**").hasAnyAuthority("USER", "MODERATOR", "ADMIN")
                 .antMatchers("/user/page_users/**",
                         "/user/search/**",
                         "/user/profile/**",
@@ -73,12 +73,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/user/change_user_password/**",
                         "/user/change_user_password/**",
                         "/user/**",
-                        "/user/**").hasAnyAuthority("ROLE_USER", "ROLE_MODERATOR", "ROLE_ADMIN")
-                .antMatchers("/user/delete_own_account/**").hasAnyAuthority("ROLE_USER", "ROLE_MODERATOR")
-                .antMatchers("/user/delete_someone_else_account/**").hasAnyAuthority("ROLE_MODERATOR", "ROLE_ADMIN")
+                        "/user/**").hasAnyAuthority("USER", "MODERATOR", "ADMIN")
+                .antMatchers("/user/delete_own_account/**").hasAnyAuthority("USER", "MODERATOR")
+                .antMatchers("/user/delete_someone_else_account/**").hasAnyAuthority("MODERATOR", "ADMIN")
                 .antMatchers("/user/give_moderator_role/**",
                         "/user/give_admin_role/**",
-                        "/user/give_user_role/**").hasAnyAuthority("ROLE_ADMIN")
+                        "/user/give_user_role/**").hasAnyAuthority("ADMIN")
                 .anyRequest().authenticated();
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

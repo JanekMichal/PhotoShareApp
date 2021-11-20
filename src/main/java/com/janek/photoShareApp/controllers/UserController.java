@@ -1,11 +1,12 @@
 package com.janek.photoShareApp.controllers;
 
-import com.janek.photoShareApp.models.ERole;
+import com.janek.photoShareApp.models.Role;
 import com.janek.photoShareApp.models.User;
 import com.janek.photoShareApp.models.UserPage;
 import com.janek.photoShareApp.payload.request.UserDataUpdateRequest;
 import com.janek.photoShareApp.payload.request.UserPasswordUpdateRequest;
 import com.janek.photoShareApp.service.UserService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import java.util.List;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/user/")
+@AllArgsConstructor
 public class UserController {
 
     UserService userService;
@@ -70,18 +72,18 @@ public class UserController {
     @Transactional
     @PatchMapping("give_moderator_role/{id}")
     public ResponseEntity<?> giveModeratorRole(@PathVariable("id") Long userId) {
-        return userService.giveRole(userId, ERole.ROLE_MODERATOR);
+        return userService.giveRole(userId, Role.MODERATOR);
     }
 
     @Transactional
     @PatchMapping("give_admin_role/{id}")
     public ResponseEntity<?> giveAdminRole(@PathVariable("id") Long userId) {
-        return userService.giveRole(userId, ERole.ROLE_ADMIN);
+        return userService.giveRole(userId, Role.ADMIN);
     }
 
     @Transactional
     @PatchMapping("give_user_role/{id}")
-    public ResponseEntity<?> giveUserRole(@PathVariable("id") Long userId) {
-        return userService.giveRole(userId, ERole.ROLE_USER);
+    public ResponseEntity<User> giveUserRole(@PathVariable("id") Long userId) {
+        return userService.giveRole(userId, Role.USER);
     }
 }
