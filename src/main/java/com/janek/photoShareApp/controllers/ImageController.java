@@ -66,7 +66,7 @@ public class ImageController {
     }
 
     @GetMapping("/get_profile_image/{user_id}")
-    public ProfileImage getProfileImageById(@PathVariable("user_id") Long userId) {
+    public ResponseEntity<?> getProfileImageById(@PathVariable("user_id") Long userId) {
         return imageService.getProfileImageById(userId);
     }
 }

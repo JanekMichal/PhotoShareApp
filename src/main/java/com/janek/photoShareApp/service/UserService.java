@@ -8,6 +8,7 @@ import com.janek.photoShareApp.payload.request.UserPasswordUpdateRequest;
 import com.janek.photoShareApp.payload.response.MessageResponse;
 import com.janek.photoShareApp.repository.FollowRepository;
 import com.janek.photoShareApp.repository.ImageRepository;
+import com.janek.photoShareApp.repository.ProfileImageRepository;
 import com.janek.photoShareApp.repository.UserRepository;
 import com.janek.photoShareApp.security.services.UserDetailsServiceImpl;
 import lombok.AllArgsConstructor;
@@ -31,6 +32,7 @@ public class UserService {
     FollowRepository followRepository;
     ImageRepository imageRepository;
     AuthService authService;
+    ProfileImageRepository profileImageRepository;
 
     public ResponseEntity<List<User>> getUsersPage(int pageNumber, UserPage userPage) {
         userPage.setPageNumber(pageNumber);
@@ -63,11 +65,15 @@ public class UserService {
 //    }
 
     public ResponseEntity<?> deleteSomeoneElseAccount(Long userId) {
+        if (userRepository.findUserById(userId).getRole() == Role.ADMIN) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
         followRepository.deleteAllByFollowerId(userId);
         followRepository.deleteAllByFollowingId(userId);
         userRepository.deleteUserById(userId);
         imageRepository.deleteAllByOwnerId(userId);
-
+        profileImageRepository.deleteByOwnerId(userId);
+        
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -75,13 +81,13 @@ public class UserService {
         if (authService.getCurrentUser().getId() != userId) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
+                    .body(new MessageResponse("Error: You can't delete someone else account!"));
         } else {
             followRepository.deleteAllByFollowerId(userId);
             followRepository.deleteAllByFollowingId(userId);
             userRepository.deleteUserById(userId);
             imageRepository.deleteAllByOwnerId(userId);
-
+            profileImageRepository.deleteByOwnerId(userId);
             return new ResponseEntity<>(HttpStatus.OK);
         }
     }
@@ -131,7 +137,4 @@ public class UserService {
         userRepository.save(user);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
-
-
-
 }

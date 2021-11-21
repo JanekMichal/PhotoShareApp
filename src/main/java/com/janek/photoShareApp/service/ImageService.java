@@ -130,11 +130,13 @@ public class ImageService {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    public ProfileImage getProfileImageById(Long userId) {
+    public ResponseEntity<?> getProfileImageById(Long userId) {
         final Optional<ProfileImage> retrievedProfileImage = profileImageRepository.getByOwnerId(userId);
-        return retrievedProfileImage.map(
-                        profileImage -> new ProfileImage(profileImage.getName(), profileImage.getType(),
-                                profileImage.getOwnerId(), decompressBytes(profileImage.getPicByte()))).
-                orElseThrow(() -> new RuntimeException("Image not found"));
+
+        return new ResponseEntity<>(retrievedProfileImage.map(
+                profileImage -> new ProfileImage(profileImage.getName(), profileImage.getType(),
+                        profileImage.getOwnerId(), decompressBytes(profileImage.getPicByte()))), HttpStatus.OK);
+
     }
 }
+

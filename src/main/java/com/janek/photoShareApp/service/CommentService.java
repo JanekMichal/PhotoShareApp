@@ -2,9 +2,9 @@ package com.janek.photoShareApp.service;
 
 import com.janek.photoShareApp.models.Comment;
 import com.janek.photoShareApp.models.CommentPage;
+import com.janek.photoShareApp.models.Role;
 import com.janek.photoShareApp.repository.CommentRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,19 +14,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
+@AllArgsConstructor
 public class CommentService {
 
-    @Autowired
     CommentRepository commentRepository;
-
-    @Autowired
     AuthService authService;
-
-    public CommentService(CommentRepository commentRepository) {
-        this.commentRepository = commentRepository;
-    }
 
     public Page<Comment> getCommentsPage(CommentPage commentPage, Long imageId) {
         Sort sort = Sort.by(commentPage.getSortDirection(), commentPage.getSortBy());
@@ -54,7 +49,11 @@ public class CommentService {
     }
 
     public ResponseEntity<?> deleteComment(Long commentId) {
-        commentRepository.deleteById(commentId);
+        if (Objects.equals(commentRepository.findCommentById(commentId).getOwnerId(), authService.getCurrentUser().getId())
+                || authService.getCurrentUser().getRole() == Role.ADMIN || authService.getCurrentUser().getRole() == Role.MODERATOR) {
+            commentRepository.deleteById(commentId);
+        }
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

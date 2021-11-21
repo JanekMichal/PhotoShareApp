@@ -14,4 +14,5 @@ public interface CommentRepository extends PagingAndSortingRepository<Comment, L
     Long countAllByImageIdOrderById(Long photoId);
     Page<Comment> getCommentsByImageId(Long photoId, Pageable pageable);
     List<Comment> getCommentsByImageIdOrderByCommentDateDesc(Long photoId);
+    Comment findCommentById(Long commentId);
 }

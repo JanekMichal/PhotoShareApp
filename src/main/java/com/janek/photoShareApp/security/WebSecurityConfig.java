@@ -77,7 +77,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/delete_own_account/**").hasAnyAuthority("USER", "MODERATOR")
                 .antMatchers("/user/delete_someone_else_account/**").hasAnyAuthority("MODERATOR", "ADMIN")
                 .antMatchers("/user/give_moderator_role/**",
-                        "/user/give_admin_role/**",
                         "/user/give_user_role/**").hasAnyAuthority("ADMIN")
                 .anyRequest().authenticated();
 

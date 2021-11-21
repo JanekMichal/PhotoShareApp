@@ -75,11 +75,7 @@ public class UserController {
         return userService.giveRole(userId, Role.MODERATOR);
     }
 
-    @Transactional
-    @PatchMapping("give_admin_role/{id}")
-    public ResponseEntity<?> giveAdminRole(@PathVariable("id") Long userId) {
-        return userService.giveRole(userId, Role.ADMIN);
-    }
+
 
     @Transactional
     @PatchMapping("give_user_role/{id}")
