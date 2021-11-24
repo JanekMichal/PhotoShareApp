@@ -1,6 +1,8 @@
 package com.janek.photoShareApp.controllers;
 
+import com.janek.photoShareApp.models.CommentPage;
 import com.janek.photoShareApp.models.Image;
+import com.janek.photoShareApp.models.ImagePage;
 import com.janek.photoShareApp.models.ProfileImage;
 import com.janek.photoShareApp.service.ImageService;
 import lombok.AllArgsConstructor;
@@ -24,6 +26,11 @@ public class ImageController {
     @GetMapping("/get_feed_images")
     public ResponseEntity<?> getFeedImages() {
         return imageService.getFeedImages();
+    }
+
+    @GetMapping("/get_feed_images_paged/{page_number}")
+    public ResponseEntity<?> getFeedImages(@PathVariable("page_number") int pageNumber) {
+        return imageService.getFeedImagesPaged(pageNumber, new ImagePage());
     }
 
     @PatchMapping("/change_description/{image_id}")

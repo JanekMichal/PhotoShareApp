@@ -6,9 +6,9 @@ import org.springframework.data.domain.Sort;
 
 @Getter
 @Setter
-public class LikePage {
+public class ImagePage {
     private int pageNumber = 0;
     private int pageSize = 5;
-    private Sort.Direction sortDirection = Sort.Direction.DESC;
+    private Sort.Direction sortDirection = Sort.Direction.ASC;
     private String sortBy = "id";
 }

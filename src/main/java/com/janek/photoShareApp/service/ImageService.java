@@ -1,24 +1,21 @@
 package com.janek.photoShareApp.service;
 
-import com.janek.photoShareApp.models.Follow;
-import com.janek.photoShareApp.models.Image;
-import com.janek.photoShareApp.models.ProfileImage;
-import com.janek.photoShareApp.models.User;
+import com.janek.photoShareApp.models.*;
 import com.janek.photoShareApp.payload.response.MessageResponse;
 import com.janek.photoShareApp.repository.FollowRepository;
 import com.janek.photoShareApp.repository.ImageRepository;
 import com.janek.photoShareApp.repository.ProfileImageRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.janek.photoShareApp.service.ImageCompression.compressBytes;
 import static com.janek.photoShareApp.service.ImageCompression.decompressBytes;
@@ -38,11 +35,30 @@ public class ImageService {
         List<Long> listOfIdAllFollowedUsers = new ArrayList<>();
         for (Follow follow : listOfAllFollowedUsers) {
             listOfIdAllFollowedUsers.add(follow.getFollowing().getId());
-
         }
 
-        final List<Image> retrievedImages = imageRepository.findTop10ByOwnerIdInOrderByIdDesc(listOfIdAllFollowedUsers);
+        List<Image> retrievedImages = imageRepository.findTop10ByOwnerIdInOrderByIdDesc(listOfIdAllFollowedUsers);
+        if (retrievedImages != null) {
+            for (Image image : retrievedImages) {
+                image.setPicByte(decompressBytes(image.getPicByte()));
+            }
+            return new ResponseEntity<>(retrievedImages, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(2, HttpStatus.NOT_FOUND);
+        }
+    }
 
+    public ResponseEntity<?> getFeedImagesPaged(int pageNumber, ImagePage imagePage) {
+        imagePage.setPageNumber(pageNumber);
+        List<Follow> listOfAllFollowedUsers = followRepository.findAllByFollowerId(authService.getCurrentUser().getId());
+        List<Long> listOfIdAllFollowedUsers = new ArrayList<>();
+        for (Follow follow : listOfAllFollowedUsers) {
+            listOfIdAllFollowedUsers.add(follow.getFollowing().getId());
+        }
+        Sort sort = Sort.by(imagePage.getSortDirection(), imagePage.getSortBy());
+        Pageable pageable = PageRequest.of(imagePage.getPageNumber(), imagePage.getPageSize(), sort);
+
+        List<Image> retrievedImages = imageRepository.findByOwnerIdInOrderByIdDesc(listOfIdAllFollowedUsers, pageable).getContent();
         if (retrievedImages != null) {
             for (Image image : retrievedImages) {
                 image.setPicByte(decompressBytes(image.getPicByte()));
@@ -101,7 +117,7 @@ public class ImageService {
 
     public ResponseEntity<?> deleteOwnImage(Long imageId) {
         Image image = imageRepository.findById(imageId).orElseThrow(() -> new RuntimeException("Image not found!"));
-        if (image.getOwnerId() != authService.getCurrentUser().getId()) {
+        if (!Objects.equals(image.getOwnerId(), authService.getCurrentUser().getId())) {
             throw new RuntimeException("You are not owner of this image!");
         } else {
             imageRepository.deleteById(imageId);
@@ -139,4 +155,3 @@ public class ImageService {
 
     }
 }
-

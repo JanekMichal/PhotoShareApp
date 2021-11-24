@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -78,7 +79,7 @@ public class UserService {
     }
 
     public ResponseEntity<?> deleteOwnAccount(Long userId) {
-        if (authService.getCurrentUser().getId() != userId) {
+        if (!Objects.equals(authService.getCurrentUser().getId(), userId)) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: You can't delete someone else account!"));

@@ -37,8 +37,8 @@ public class CommentService {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    public ResponseEntity<List<Comment>> getCommentsPaged(Long photoId, int page, CommentPage commentPage) {
-        commentPage.setPageNumber(page);
+    public ResponseEntity<List<Comment>> getCommentsPaged(Long photoId, int pageNumber, CommentPage commentPage) {
+        commentPage.setPageNumber(pageNumber);
         List<Comment> commentsListPaged = getCommentsPage(commentPage, photoId).getContent();
         return new ResponseEntity<>(commentsListPaged, HttpStatus.OK);
     }
