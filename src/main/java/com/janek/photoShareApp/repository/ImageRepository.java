@@ -12,8 +12,6 @@ import java.util.Optional;
 
 @Repository
 public interface ImageRepository extends JpaRepository<Image, Long> {
-    Optional<Image> findByName(String name);
-
     @Override
     Optional<Image> findById(Long aLong);
 
@@ -26,8 +24,5 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
 
     List<Image> findTop10ByOwnerIdInOrderByIdDesc(Collection<Long> ownerId);
 
-    List<Image> findByOwnerIdInOrderByIdDesc(Collection<Long> ownerId);
-
     Page<Image> findByOwnerIdInOrderByIdDesc(Collection<Long> ownerId, Pageable pageable);
-    List<Image> getAllByOwnerId(Long ownerId);
 }
