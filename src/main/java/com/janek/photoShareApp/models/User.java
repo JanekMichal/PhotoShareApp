@@ -7,12 +7,13 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Entity
-@Table(	name = "users", 
-		uniqueConstraints = { 
+@Table(	name = "users",
+		uniqueConstraints = {
 			@UniqueConstraint(columnNames = "username"),
-			@UniqueConstraint(columnNames = "email") 
+			@UniqueConstraint(columnNames = "email")
 		})
 @Setter
 @Getter

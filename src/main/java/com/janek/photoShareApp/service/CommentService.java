@@ -31,10 +31,10 @@ public class CommentService {
         return commentRepository.getCommentsByImageId(imageId, pageable);
     }
 
-    public ResponseEntity<?> addComment(Long photoId, String commentBody) {
+    public ResponseEntity<Comment> addComment(Long photoId, String commentBody) {
         Comment comment = new Comment(commentBody, authService.getCurrentUser().getId(), photoId);
         commentRepository.save(comment);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(comment, HttpStatus.OK);
     }
 
     public ResponseEntity<List<Comment>> getCommentsPaged(Long photoId, int pageNumber, CommentPage commentPage) {
