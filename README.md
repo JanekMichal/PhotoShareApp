@@ -8,15 +8,23 @@ Project for Advanced Internet Applications subject at University classes
 Spring boot, PostgreSQL and Bootstrap.
 
 ## Features
+* Login and session with JWT
+* Uploading your own photos
+* pagination for feed on main page, admin board and comments
+* Admin, Moderator and User roles with different privileges
+
 * Feed with photos from other users
-> ![](screenshots/feed.png)
+> ![](screenshots/feed.jpg)
+* User profile
+> ![](screenshots/profile.jpg)
 * Editing Photos descriptions
 > ![](screenshots/description.png)
 * Editing profile data
-> ![](screenshots/edit_profile.png)
-> ![](screenshots/profile.png)
-* Admin board with all users and ability to modify theri accounts
-> ![](screenshots/admin_board.png)
+> ![](screenshots/edit-profile.jpg)
+> ![](screenshots/edit-profile2.jpg)
+
+* Admin board with all users and ability to modify their accounts
+> ![](screenshots/admin_board.jpg)
 * Seraching for user with name
 > ![](screenshots/search.png)
 * Registering new account with validation
@@ -24,10 +32,6 @@ Spring boot, PostgreSQL and Bootstrap.
 
 * View profiles of other users
 > ![](screenshots/animals.png)
-
-* Login and session with JWT
-
-* Uploading your own photos
 
 * Ability to follow, unfollow other users
 > ![](screenshots/followers.png)
