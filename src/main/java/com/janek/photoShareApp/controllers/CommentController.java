@@ -18,7 +18,7 @@ public class CommentController {
     CommentService commentService;
 
     @PostMapping("/add_comment/{photoId}")
-added    public ResponseEntity<Comment> addComment(
+    public ResponseEntity<Comment> addComment(
             @PathVariable("photoId") Long photoId,
             @RequestBody String commentBody) {
         return commentService.addComment(photoId, commentBody);
