@@ -21,9 +21,9 @@ public class LikeController {
     }
 
     @Transactional
-    @DeleteMapping("/delete_like")
-    public ResponseEntity<?> deleteLike(@RequestBody LikeRequest likeRequest) {
-        return likeService.deleteLike(likeRequest);
+    @DeleteMapping("/delete_like/{image_id}")
+    public ResponseEntity<?> deleteLike(@PathVariable("image_id") Long imageId) {
+        return likeService.deleteLike(imageId);
     }
 
     @GetMapping("/likes_count/{image_id}")

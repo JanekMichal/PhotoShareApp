@@ -102,7 +102,7 @@ public class ImageService {
 
     public Image getImageById(Long imageId) {
         final Optional<Image> retrievedImage = imageRepository.findById(imageId);
-        return new Image(retrievedImage.get().getName(), retrievedImage.get().getType(),
+        return new Image(retrievedImage.get().getId(), retrievedImage.get().getName(), retrievedImage.get().getType(),
                 retrievedImage.get().getOwnerId(), retrievedImage.get().getDescription(), decompressBytes(retrievedImage.get().getPicByte()));
     }
 

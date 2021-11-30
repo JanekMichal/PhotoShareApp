@@ -24,9 +24,8 @@ public class LikeService {
         return new ResponseEntity<>(like, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> deleteLike(LikeRequest likeRequest) {
-        likeRepository.deleteByImageIdAndOwnerId(likeRequest.getImageId(), authService.getCurrentUser().getId());
-
+    public ResponseEntity<?> deleteLike(Long imageId) {
+        likeRepository.deleteByImageIdAndOwnerId(imageId, authService.getCurrentUser().getId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

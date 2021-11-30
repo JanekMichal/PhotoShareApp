@@ -1,5 +1,6 @@
 package com.janek.photoShareApp.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +10,7 @@ import javax.persistence.*;
 @Table(name = "image_table")
 @Getter
 @Setter
+@AllArgsConstructor
 public class Image {
 
     public Image() {
@@ -49,4 +51,6 @@ public class Image {
 
     @Column(name = "pic_byte", length = 1000)
     private byte[] picByte;
+
+
 }
