@@ -37,12 +37,6 @@ public class UserController {
         return userService.getUserProfile(userId);
     }
 
-//    //TODO: zobaczyć czy to nadal jest potrzebne
-//    @PatchMapping(path = "profile/{id}/email/{email}")
-//    public ResponseEntity<?> updateEmail(@PathVariable Long id, @PathVariable String email) {
-//        return userService.updateEmail(id, email);
-//    }
-
     @Transactional
     @DeleteMapping("delete_someone_else_account/{userId}")
     public ResponseEntity<?> deleteSomeoneElseAccount(@PathVariable("userId") Long userId) {
@@ -74,8 +68,6 @@ public class UserController {
     public ResponseEntity<?> giveModeratorRole(@PathVariable("id") Long userId) {
         return userService.giveRole(userId, Role.MODERATOR);
     }
-
-
 
     @Transactional
     @PatchMapping("give_user_role/{id}")

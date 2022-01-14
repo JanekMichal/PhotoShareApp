@@ -1,9 +1,7 @@
 package com.janek.photoShareApp.controllers;
 
-import com.janek.photoShareApp.models.CommentPage;
 import com.janek.photoShareApp.models.Image;
 import com.janek.photoShareApp.models.ImagePage;
-import com.janek.photoShareApp.models.ProfileImage;
 import com.janek.photoShareApp.service.ImageService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;

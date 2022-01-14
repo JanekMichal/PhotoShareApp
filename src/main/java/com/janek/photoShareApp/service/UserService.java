@@ -44,7 +44,7 @@ public class UserService {
     }
 
     public ResponseEntity<?> searchForUser(String name) {
-        List<User> searchedUsers = userRepository.findAllByUsernameIgnoreCase(name);
+        List<User> searchedUsers = userRepository.findByUsernameContaining(name);
         return new ResponseEntity<>(searchedUsers, HttpStatus.OK);
     }
 
